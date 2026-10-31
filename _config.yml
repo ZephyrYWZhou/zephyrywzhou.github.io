@@ -9,6 +9,7 @@ minima:
   social_links:
     - { platform: github, user_url: "https://github.com/ZephyrYWZhou" }
 header_pages:
+  - polaris/index.html
   - about.md
   - projects.md
 plugins:

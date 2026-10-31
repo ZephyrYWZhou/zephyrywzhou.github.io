@@ -1,0 +1,502 @@
+---
+layout: null
+permalink: /polaris/
+title: Apache Polaris
+---
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Apache Polaris &middot; Yuewei Zhou</title>
+<meta name="description" content="Apache Polaris, the open catalog for Apache Iceberg, and my contributions to it: a DynamoDB storage backend, an authorization refactor, and structured logging.">
+<meta property="og:title" content="Apache Polaris &middot; Yuewei Zhou">
+<meta property="og:description" content="The open catalog for Apache Iceberg, and what I build for it.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://zephyrywzhou.github.io/polaris/">
+<meta name="twitter:card" content="summary">
+<meta name="theme-color" content="#0b1020">
+<link rel="canonical" href="https://zephyrywzhou.github.io/polaris/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath fill='%237dd3fc' d='M16 1l3.2 11.8L31 16l-11.8 3.2L16 31l-3.2-11.8L1 16l11.8-3.2z'/%3E%3C/svg%3E">
+<style>
+:root{
+  --bg:#0b1020;--bg2:#111833;--card:#151d3b;--line:#26305a;
+  --text:#e7ecff;--muted:#9aa6d1;--accent:#7dd3fc;--accent2:#a78bfa;--good:#4ade80;--warn:#fbbf24;
+  --radius:16px;--shadow:0 10px 30px rgba(0,0,0,.35);
+}
+:root[data-theme="light"]{
+  --bg:#f7f8fc;--bg2:#eef1fa;--card:#ffffff;--line:#d9def0;
+  --text:#141a33;--muted:#56608a;--accent:#0369a1;--accent2:#6d28d9;--good:#15803d;--warn:#b45309;
+  --shadow:0 8px 24px rgba(20,26,51,.08);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text);transition:background .3s,color .3s}
+a{color:var(--accent)}
+a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:6px}
+.wrap{max-width:1100px;margin:0 auto;padding:0 20px}
+.skip{position:absolute;left:-999px}.skip:focus{left:12px;top:12px;z-index:99;background:var(--card);padding:8px 12px}
+
+/* nav */
+nav.top{position:sticky;top:0;z-index:20;backdrop-filter:blur(10px);background:color-mix(in srgb,var(--bg) 75%,transparent);border-bottom:1px solid var(--line)}
+nav.top .wrap{display:flex;align-items:center;gap:18px;height:58px}
+nav.top .brand{font-weight:700;color:var(--text);text-decoration:none;display:flex;align-items:center;gap:8px}
+nav.top .links{display:flex;gap:16px;margin-left:auto;align-items:center}
+nav.top .links a{color:var(--muted);text-decoration:none;font-size:.95rem}
+nav.top .links a:hover,nav.top .links a.active{color:var(--text)}
+#themeBtn{background:none;border:1px solid var(--line);color:var(--text);border-radius:999px;padding:4px 10px;cursor:pointer}
+@media (max-width:720px){nav.top .links a.hide-sm{display:none}}
+
+/* hero */
+header.hero{position:relative;min-height:88vh;display:flex;align-items:center;overflow:hidden;border-bottom:1px solid var(--line)}
+#sky{position:absolute;inset:0;width:100%;height:100%}
+.hero .wrap{position:relative;z-index:2}
+.eyebrow{color:var(--accent);font-weight:600;letter-spacing:.12em;text-transform:uppercase;font-size:.8rem}
+.hero h1{font-size:clamp(2.4rem,6vw,4.4rem);line-height:1.05;margin:.3em 0 .25em}
+.grad{background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p.lead{font-size:clamp(1.05rem,2vw,1.3rem);color:var(--muted);max-width:640px}
+.cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:11px 18px;border-radius:999px;text-decoration:none;font-weight:600;border:1px solid var(--line);color:var(--text);background:var(--card);transition:transform .15s,border-color .15s}
+.btn:hover{transform:translateY(-2px);border-color:var(--accent)}
+.btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#0b1020;border:0}
+.scrollhint{position:absolute;bottom:22px;left:50%;transform:translateX(-50%);color:var(--muted);font-size:.85rem;z-index:2}
+
+/* sections */
+section{padding:84px 0;border-bottom:1px solid var(--line)}
+section:nth-of-type(even){background:var(--bg2)}
+h2{font-size:clamp(1.7rem,3.5vw,2.4rem);margin:0 0 .3em}
+.sub{color:var(--muted);max-width:720px;margin:0 0 36px}
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .7s,transform .7s}
+.reveal.in{opacity:1;transform:none}
+
+/* stats */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow)}
+.stat .n{font-size:2.2rem;font-weight:800;line-height:1}
+.stat .l{color:var(--muted);font-size:.92rem;margin-top:6px}
+.stat.mine{border-color:color-mix(in srgb,var(--accent2) 55%,var(--line))}
+.tag{display:inline-block;font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:999px;border:1px solid var(--line);color:var(--muted)}
+
+/* architecture */
+.arch{display:grid;grid-template-columns:1fr auto 1.2fr auto 1fr;gap:12px;align-items:center}
+.col{display:flex;flex-direction:column;gap:10px}
+.col h4{margin:0 0 4px;color:var(--muted);font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;text-align:center}
+.node{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;color:var(--text);cursor:pointer;text-align:left;font:inherit;transition:border-color .2s,transform .2s,box-shadow .2s}
+.node:hover{transform:translateY(-2px)}
+.node[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 25%,transparent)}
+.node.core{padding:22px;text-align:center;border-width:2px;border-color:color-mix(in srgb,var(--accent) 60%,var(--line))}
+.node.core b{font-size:1.25rem}
+.node.mine{border-style:dashed;border-color:var(--accent2)}
+.node small{display:block;color:var(--muted)}
+.wire{width:46px;height:2px;background:linear-gradient(90deg,var(--line),var(--accent),var(--line));background-size:200% 100%;animation:flow 2.2s linear infinite;position:relative}
+.wire::after{content:"";position:absolute;right:-2px;top:-4px;border-left:7px solid var(--accent);border-top:5px solid transparent;border-bottom:5px solid transparent}
+@keyframes flow{from{background-position:200% 0}to{background-position:0 0}}
+.detail{margin-top:24px;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px 22px;min-height:96px}
+.detail h3{margin:0 0 6px}
+@media (max-width:860px){.arch{grid-template-columns:1fr}.wire{width:2px;height:28px;margin:0 auto;background:linear-gradient(180deg,var(--line),var(--accent),var(--line));background-size:100% 200%;animation:flowv 2.2s linear infinite}.wire::after{right:-4px;top:auto;bottom:-2px;border-left:5px solid transparent;border-right:5px solid transparent;border-top:7px solid var(--accent);border-bottom:0}}
+@keyframes flowv{from{background-position:0 200%}to{background-position:0 0}}
+
+/* tabs / workstreams */
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.tabs button,.chip{background:var(--card);border:1px solid var(--line);color:var(--text);border-radius:999px;padding:8px 14px;cursor:pointer;font:inherit;font-size:.92rem}
+.tabs button[aria-selected="true"],.chip[aria-pressed="true"]{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#0b1020;border-color:transparent;font-weight:600}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:28px;box-shadow:var(--shadow)}
+.panel h3{margin-top:0;font-size:1.4rem}
+.panel ul{padding-left:20px}
+.panel li{margin:6px 0}
+.panel .meta{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0 16px}
+
+/* dynamo explorer */
+.explorer{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media (max-width:860px){.explorer{grid-template-columns:1fr}}
+.table{border:1px solid var(--line);border-radius:12px;overflow:hidden;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.85rem}
+.row{display:grid;grid-template-columns:1.1fr 1.4fr .9fr;border-top:1px solid var(--line)}
+.row:first-child{border-top:0;background:var(--bg2);font-weight:700}
+.row>div{padding:9px 10px;overflow-wrap:anywhere}
+.row.hl{background:color-mix(in srgb,var(--accent) 14%,transparent)}
+.row.new{animation:pop .6s}
+@keyframes pop{from{background:color-mix(in srgb,var(--good) 35%,transparent)}}
+.sim{display:flex;flex-direction:column;gap:12px}
+.log{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:12px;font-family:ui-monospace,Menlo,monospace;font-size:.82rem;min-height:150px;max-height:230px;overflow:auto}
+.log .ok{color:var(--good)}.log .bad{color:#f87171}.log .info{color:var(--muted)}
+.simbtns{display:flex;gap:8px;flex-wrap:wrap}
+.note{color:var(--muted);font-size:.85rem}
+
+/* roadmap */
+.road{display:flex;gap:0;align-items:flex-start;overflow-x:auto;padding-bottom:6px}
+.step{flex:1 0 140px;text-align:center;position:relative;padding:0 6px}
+.step .dot{width:22px;height:22px;border-radius:50%;margin:0 auto 10px;border:2px solid var(--line);background:var(--bg);position:relative;z-index:1}
+.step.done .dot{background:var(--good);border-color:var(--good)}
+.step.review .dot{background:var(--warn);border-color:var(--warn)}
+.step::before{content:"";position:absolute;top:10px;left:-50%;width:100%;height:2px;background:var(--line)}
+.step:first-child::before{display:none}
+.step.done::before,.step.review::before{background:var(--good)}
+.step b{display:block;font-size:.92rem}
+.step span{color:var(--muted);font-size:.8rem}
+
+/* timeline */
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px}
+.tl{position:relative;padding-left:26px}
+.tl::before{content:"";position:absolute;left:8px;top:4px;bottom:4px;width:2px;background:var(--line)}
+.pr{position:relative;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:12px;transition:opacity .3s,transform .3s}
+.pr::before{content:"";position:absolute;left:-24px;top:20px;width:12px;height:12px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px var(--bg)}
+.pr.review::before{background:var(--warn)}
+.pr.hidden{display:none}
+.pr .top{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.pr .top a{font-weight:600;text-decoration:none;color:var(--text)}
+.pr .top a:hover{color:var(--accent)}
+.pr .date{color:var(--muted);font-size:.85rem;margin-left:auto}
+.bar{display:flex;height:6px;border-radius:4px;overflow:hidden;margin-top:10px;background:var(--bg2)}
+.bar i{display:block}.bar .a{background:var(--good)}.bar .d{background:#f87171}
+.pr .nums{font-size:.8rem;color:var(--muted);margin-top:6px;font-family:ui-monospace,Menlo,monospace}
+
+footer{padding:40px 0;color:var(--muted);font-size:.9rem}
+footer .wrap{display:flex;gap:16px;flex-wrap:wrap;justify-content:space-between}
+
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}.reveal{opacity:1;transform:none}}
+</style>
+<script>
+  (function(){var t=localStorage.getItem('theme');if(t)document.documentElement.dataset.theme=t;})();
+</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<nav class="top" aria-label="Main">
+  <div class="wrap">
+    <a class="brand" href="/">&#10022; Yuewei Zhou</a>
+    <div class="links">
+      <a href="#what" class="hide-sm">Polaris</a>
+      <a href="#work" class="hide-sm">My work</a>
+      <a href="#dynamo" class="hide-sm">DynamoDB</a>
+      <a href="#timeline">PRs</a>
+      <a href="/">Blog</a>
+      <button id="themeBtn" type="button" aria-label="Switch color theme">&#9680;</button>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <canvas id="sky" aria-hidden="true"></canvas>
+  <div class="wrap">
+    <div class="eyebrow">Open source &middot; Apache Software Foundation</div>
+    <h1>Apache <span class="grad">Polaris</span></h1>
+    <p class="lead">The open catalog for Apache Iceberg. One shared source of truth for your tables, so Spark, Trino, Flink, and more can read and write the same data safely.</p>
+    <p class="lead">I'm Yuewei, a core contributor. I build its storage, access control, and logging.</p>
+    <div class="cta">
+      <a class="btn primary" href="#work">See my contributions &rarr;</a>
+      <a class="btn" href="https://github.com/apache/polaris" target="_blank" rel="noopener">Polaris on GitHub</a>
+      <a class="btn" href="https://polaris.apache.org" target="_blank" rel="noopener">polaris.apache.org</a>
+    </div>
+  </div>
+  <div class="scrollhint" aria-hidden="true">scroll &darr;</div>
+</header>
+
+<main id="main">
+
+<section id="numbers">
+  <div class="wrap">
+    <h2 class="reveal">By the numbers</h2>
+    <p class="sub reveal">The project, and my part in it.</p>
+    <div class="stats">
+      <div class="stat reveal"><div class="n" data-count="2100" data-suffix="+">0</div><div class="l">GitHub stars on Polaris</div></div>
+      <div class="stat reveal"><div class="n" data-count="560" data-suffix="+">0</div><div class="l">Forks</div></div>
+      <div class="stat reveal"><div class="n" data-count="180" data-suffix="+">0</div><div class="l">Contributors</div></div>
+      <div class="stat mine reveal"><div class="n" data-count="2200" data-prefix="~">0</div><div class="l"><span class="tag">mine</span> Lines changed, merged</div></div>
+      <div class="stat mine reveal"><div class="n" data-count="9">0</div><div class="l"><span class="tag">mine</span> Merged pull requests</div></div>
+      <div class="stat mine reveal"><div class="n" data-count="3">0</div><div class="l"><span class="tag">mine</span> Core areas: storage, auth, logging</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="what">
+  <div class="wrap">
+    <h2 class="reveal">What Polaris does</h2>
+    <p class="sub reveal">Engines talk to Polaris through the standard Iceberg REST API. Polaris decides who can see what, hands out short-lived storage keys, and keeps table metadata safe. Click any box.</p>
+
+    <div class="arch reveal" role="group" aria-label="Polaris architecture">
+      <div class="col">
+        <h4>Engines</h4>
+        <button class="node" data-k="spark">Apache Spark</button>
+        <button class="node" data-k="trino">Trino</button>
+        <button class="node" data-k="flink">Apache Flink</button>
+        <button class="node" data-k="more">Dremio, StarRocks, Doris&hellip;</button>
+      </div>
+      <div class="wire" aria-hidden="true"></div>
+      <div class="col">
+        <h4>Catalog</h4>
+        <button class="node core" data-k="rest"><b>Polaris</b><small>Iceberg REST catalog</small></button>
+        <button class="node" data-k="rbac">Access control (RBAC)<small>my work</small></button>
+        <button class="node" data-k="creds">Credential vending</button>
+        <button class="node" data-k="logs">Structured logging<small>my work</small></button>
+      </div>
+      <div class="wire" aria-hidden="true"></div>
+      <div class="col">
+        <h4>Metadata &amp; data</h4>
+        <button class="node" data-k="pg">PostgreSQL (JDBC)</button>
+        <button class="node" data-k="mongo">MongoDB</button>
+        <button class="node mine" data-k="ddb">Amazon DynamoDB<small>my work &middot; in progress</small></button>
+        <button class="node" data-k="obj">S3 / GCS / Azure<small>table files</small></button>
+      </div>
+    </div>
+    <div class="detail reveal" id="detail" aria-live="polite">
+      <h3>Pick a box</h3>
+      <p class="note">Each one explains its role in the stack.</p>
+    </div>
+  </div>
+</section>
+
+<section id="work">
+  <div class="wrap">
+    <h2 class="reveal">My contributions</h2>
+    <p class="sub reveal">Three core areas of the catalog, through design, code, and community discussion.</p>
+    <div class="tabs reveal" role="tablist" aria-label="Contribution areas">
+      <button role="tab" aria-selected="true" aria-controls="p-ddb" id="t-ddb">DynamoDB backend</button>
+      <button role="tab" aria-selected="false" aria-controls="p-auth" id="t-auth" tabindex="-1">Authorization</button>
+      <button role="tab" aria-selected="false" aria-controls="p-log" id="t-log" tabindex="-1">Observability</button>
+      <button role="tab" aria-selected="false" aria-controls="p-docs" id="t-docs" tabindex="-1">Docs</button>
+    </div>
+
+    <div class="panel reveal" role="tabpanel" id="p-ddb" aria-labelledby="t-ddb">
+      <h3>An AWS-native, serverless storage backend</h3>
+      <div class="meta"><span class="tag">Initiated &amp; designed</span><span class="tag">End-to-end owner</span><span class="tag">In progress</span></div>
+      <p>Polaris stores catalog metadata (tables, namespaces, and access grants) in a database. Teams on AWS had to run Postgres or MongoDB just for that. I proposed a DynamoDB backend, wrote the design, earned community endorsement, and I'm building it end to end.</p>
+      <ul>
+        <li><b>For users:</b> fully serverless, auto-scaling, with built-in high availability and no database to run.</li>
+        <li><b>Thin adapter:</b> reuses Polaris's existing compare-and-set model. Catalog API and entity model stay unchanged. Opt-in, no migration.</li>
+        <li><b>Single-table design:</b> typed items by sort key, a name-sentinel item for uniqueness, and sparse indexes for listing and grants.</li>
+        <li><b>Correct by design:</b> every correctness read is a strongly consistent single-key read. Indexes are used only for discovery.</li>
+      </ul>
+      <p><a href="https://docs.google.com/document/d/1vc7FCvznlfdBoHe0DJQo1vRzcd0AXHFX4cGrFhuiF9Y/edit" target="_blank" rel="noopener">Read the design doc &rarr;</a> &nbsp;&middot;&nbsp; <a href="#dynamo">Try the interactive demo &darr;</a></p>
+    </div>
+
+    <div class="panel reveal" role="tabpanel" id="p-auth" aria-labelledby="t-auth" hidden>
+      <h3>A cleaner authorization path</h3>
+      <div class="meta"><span class="tag">3 merged PRs</span><span class="tag">Core</span></div>
+      <p>Every catalog call runs a permission check. That logic was repeated across authorizers. I reworked it into one explicit, shared path.</p>
+      <ul>
+        <li>Unified intent-to-path resolution across <b>3 authorizers</b>: Polaris built-in, Apache Ranger, and OPA.</li>
+        <li>Threaded a typed resolved intent through privilege checks, so each check works on resolved data.</li>
+        <li>Removed redundant per-record overrides across <b>12 files</b> of authorization intents.</li>
+      </ul>
+    </div>
+
+    <div class="panel reveal" role="tabpanel" id="p-log" aria-labelledby="t-log" hidden>
+      <h3>One source of truth for logs</h3>
+      <div class="meta"><span class="tag">Shipped in Polaris 1.7.0</span></div>
+      <p>Log keys were typed as loose strings all over the code. That makes logs hard to search and easy to break.</p>
+      <ul>
+        <li>Introduced <code>StructuredLogKeys</code>: about <b>55</b> shared keys for SLF4J structured logging.</li>
+        <li>Replaced about <b>100</b> hardcoded key strings across the codebase.</li>
+        <li>Follow-up: standardized the view-identifier key on mismatch errors.</li>
+      </ul>
+    </div>
+
+    <div class="panel reveal" role="tabpanel" id="p-docs" aria-labelledby="t-docs" hidden>
+      <h3>Federation docs</h3>
+      <div class="meta"><span class="tag">Docs</span></div>
+      <p>Documented <code>ENABLE_SUB_CATALOG_RBAC_FOR_FEDERATED_CATALOGS</code>, which controls fine-grained access inside federated catalogs. It helps operators turn it on safely.</p>
+    </div>
+  </div>
+</section>
+
+<section id="dynamo">
+  <div class="wrap">
+    <h2 class="reveal">Inside the DynamoDB design</h2>
+    <p class="sub reveal">A small simulation of how the backend keeps names unique and updates safe. Press the buttons and watch the table.</p>
+
+    <div class="explorer reveal">
+      <div>
+        <div class="table" id="ddbTable" role="table" aria-label="Simplified single table">
+          <div class="row" role="row"><div role="columnheader">PK</div><div role="columnheader">SK</div><div role="columnheader">version</div></div>
+        </div>
+        <p class="note">Simplified and illustrative. Real key layouts are in the design doc.</p>
+      </div>
+      <div class="sim">
+        <div class="simbtns">
+          <button class="chip" id="bCreate" type="button">Create table "orders"</button>
+          <button class="chip" id="bDup" type="button">Create "orders" again</button>
+          <button class="chip" id="bUpdate" type="button">Update, right version</button>
+          <button class="chip" id="bStale" type="button">Update, stale version</button>
+          <button class="chip" id="bReset" type="button">Reset</button>
+        </div>
+        <div class="log" id="log" aria-live="polite"></div>
+      </div>
+    </div>
+
+    <h3 class="reveal" style="margin-top:46px">Delivery progress</h3>
+    <div class="road reveal">
+      <div class="step done"><div class="dot"></div><b>Module skeleton</b><span>#5622 &middot; merged</span></div>
+      <div class="step done"><div class="dot"></div><b>Data model</b><span>#5707 &middot; merged</span></div>
+      <div class="step done"><div class="dot"></div><b>Schema + test harness</b><span>#5830 &middot; merged</span></div>
+      <div class="step review"><div class="dot"></div><b>Writes, CAS, uniqueness</b><span>#5892 &middot; in review</span></div>
+      <div class="step"><div class="dot"></div><b>Reads &amp; listing</b><span>next</span></div>
+      <div class="step"><div class="dot"></div><b>Grants &amp; full suite</b><span>next</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="timeline">
+  <div class="wrap">
+    <h2 class="reveal">Every pull request</h2>
+    <p class="sub reveal">Merged and in review, newest first. Bars show lines added and removed.</p>
+    <div class="filters reveal" role="group" aria-label="Filter pull requests">
+      <button class="chip" aria-pressed="true" data-f="all">All</button>
+      <button class="chip" aria-pressed="false" data-f="storage">Storage</button>
+      <button class="chip" aria-pressed="false" data-f="auth">Authorization</button>
+      <button class="chip" aria-pressed="false" data-f="logs">Observability</button>
+      <button class="chip" aria-pressed="false" data-f="docs">Docs</button>
+    </div>
+    <div class="tl" id="prs"></div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>&copy; 2026 Yuewei Zhou &middot; <a href="/">Home</a> &middot; <a href="https://github.com/ZephyrYWZhou" target="_blank" rel="noopener">GitHub</a></span>
+    <span>Apache Polaris, Apache Iceberg, and Apache are trademarks of the Apache Software Foundation. This is a personal page, not an official ASF site.</span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* theme */
+  var root=document.documentElement, tb=document.getElementById('themeBtn');
+  tb.addEventListener('click',function(){
+    var next = root.dataset.theme==='light' ? 'dark' : 'light';
+    root.dataset.theme = next; localStorage.setItem('theme', next);
+  });
+
+  /* star sky with Polaris and the Little Dipper */
+  var c=document.getElementById('sky'), x=c.getContext('2d'), stars=[], W,H,dpr, mx=0,my=0;
+  var dipper=[[.78,.22],[.74,.32],[.71,.41],[.66,.48],[.61,.58],[.69,.63],[.72,.54]];
+  function size(){dpr=window.devicePixelRatio||1;W=c.clientWidth;H=c.clientHeight;c.width=W*dpr;c.height=H*dpr;x.setTransform(dpr,0,0,dpr,0,0);
+    stars=[];var n=Math.min(260,Math.floor(W*H/5200));for(var i=0;i<n;i++)stars.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.3+.2,t:Math.random()*6,z:Math.random()*.8+.2});}
+  function light(){return root.dataset.theme==='light';}
+  function draw(time){
+    x.clearRect(0,0,W,H);
+    var sc = light() ? '20,26,51' : '231,236,255';
+    stars.forEach(function(s){var a=reduce?.7:.35+.45*Math.abs(Math.sin(time/1400+s.t));
+      x.fillStyle='rgba('+sc+','+a+')';x.beginPath();x.arc(s.x+mx*s.z*12,s.y+my*s.z*12,s.r,0,6.283);x.fill();});
+    var pts=dipper.map(function(p){return[p[0]*W+mx*20,p[1]*H+my*20];});
+    x.strokeStyle=light()?'rgba(3,105,161,.35)':'rgba(125,211,252,.35)';x.lineWidth=1.2;x.beginPath();
+    pts.forEach(function(p,i){i?x.lineTo(p[0],p[1]):x.moveTo(p[0],p[1]);});x.lineTo(pts[3][0],pts[3][1]);x.stroke();
+    pts.forEach(function(p,i){x.fillStyle=light()?'#0369a1':'#e7ecff';x.beginPath();x.arc(p[0],p[1],i?2.2:0,0,6.283);x.fill();});
+    var px=pts[0][0],py=pts[0][1],pulse=reduce?1:1+.12*Math.sin(time/700);
+    var g=x.createRadialGradient(px,py,0,px,py,46*pulse);g.addColorStop(0,light()?'rgba(3,105,161,.55)':'rgba(125,211,252,.9)');g.addColorStop(1,'rgba(125,211,252,0)');
+    x.fillStyle=g;x.beginPath();x.arc(px,py,46*pulse,0,6.283);x.fill();
+    x.fillStyle=light()?'#0369a1':'#ffffff';x.beginPath();
+    for(var k=0;k<8;k++){var ang=k*Math.PI/4,rr=k%2?3:12;x.lineTo(px+Math.cos(ang)*rr,py+Math.sin(ang)*rr);}x.closePath();x.fill();
+    x.font='600 12px -apple-system,Segoe UI,sans-serif';x.fillStyle=light()?'#56608a':'#9aa6d1';x.fillText('Polaris',px+16,py-12);
+    if(!reduce)requestAnimationFrame(draw);
+  }
+  size();window.addEventListener('resize',function(){size();if(reduce)draw(0);});
+  if(!reduce){window.addEventListener('mousemove',function(e){mx=e.clientX/W-.5;my=e.clientY/H-.5;});}
+  requestAnimationFrame(draw);
+
+  /* reveal + counters */
+  function count(el){var t=+el.dataset.count,p=el.dataset.prefix||'',s=el.dataset.suffix||'';
+    if(reduce){el.textContent=p+t.toLocaleString()+s;return;}
+    var st=null;function step(ts){if(!st)st=ts;var k=Math.min(1,(ts-st)/1200),v=Math.round(t*(1-Math.pow(1-k,3)));
+      el.textContent=p+v.toLocaleString()+s;if(k<1)requestAnimationFrame(step);}requestAnimationFrame(step);}
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');
+    e.target.querySelectorAll('[data-count]').forEach(count);io.unobserve(e.target);}});},{threshold:.15});
+  document.querySelectorAll('.reveal').forEach(function(el){io.observe(el);});
+
+  /* architecture */
+  var info={
+    spark:['Apache Spark','Reads and writes Iceberg tables through Polaris for batch and streaming jobs.'],
+    trino:['Trino','Fast SQL queries over the same Iceberg tables, with no copy.'],
+    flink:['Apache Flink','Streams data into Iceberg tables that every other engine can see right away.'],
+    more:['Many more engines','Any engine that speaks the Iceberg REST API can use Polaris. That is the point: one catalog, many engines.'],
+    rest:['Polaris core','Implements the open Iceberg REST catalog API. It tracks every table, namespace, and version, so engines agree on what the data is.'],
+    rbac:['Access control (my work)','Role-based permissions decide who can read or change each catalog, namespace, and table. I unified how permission checks resolve across the built-in, Ranger, and OPA authorizers.'],
+    creds:['Credential vending','Polaris hands engines short-lived, scoped storage keys, so they only touch the files they are allowed to.'],
+    logs:['Structured logging (my work)','Every log line uses shared, typed keys. I introduced StructuredLogKeys, shipped in Polaris 1.7.0.'],
+    pg:['PostgreSQL','The common relational backend for catalog metadata, through JDBC.'],
+    mongo:['MongoDB','A NoSQL backend option for catalog metadata.'],
+    ddb:['Amazon DynamoDB (my work, in progress)','A new serverless backend I designed and am building. Auto-scaling and highly available, with no database to operate.'],
+    obj:['Object storage','The actual Iceberg data and metadata files live in S3, GCS, or Azure. Polaris points to them and controls access.']
+  };
+  var nodes=document.querySelectorAll('.node'), det=document.getElementById('detail');
+  nodes.forEach(function(n){n.setAttribute('aria-pressed','false');n.addEventListener('click',function(){
+    nodes.forEach(function(m){m.setAttribute('aria-pressed','false');});n.setAttribute('aria-pressed','true');
+    var d=info[n.dataset.k];det.innerHTML='';var h=document.createElement('h3');h.textContent=d[0];var p=document.createElement('p');p.textContent=d[1];det.appendChild(h);det.appendChild(p);});});
+
+  /* tabs */
+  var tabs=[].slice.call(document.querySelectorAll('[role=tab]'));
+  function sel(t){tabs.forEach(function(o){var on=o===t;o.setAttribute('aria-selected',on);o.tabIndex=on?0:-1;
+    document.getElementById(o.getAttribute('aria-controls')).hidden=!on;});t.focus();}
+  tabs.forEach(function(t,i){t.addEventListener('click',function(){sel(t);});
+    t.addEventListener('keydown',function(e){if(e.key==='ArrowRight')sel(tabs[(i+1)%tabs.length]);if(e.key==='ArrowLeft')sel(tabs[(i-1+tabs.length)%tabs.length]);});});
+  document.querySelectorAll('[role=tabpanel]').forEach(function(p){p.classList.add('in');});
+
+  /* dynamo sim */
+  var tbl=document.getElementById('ddbTable'), log=document.getElementById('log'), items;
+  function say(cls,msg){var d=document.createElement('div');d.className=cls;d.textContent=msg;log.appendChild(d);log.scrollTop=log.scrollHeight;}
+  function render(hl){tbl.querySelectorAll('.row:not(:first-child)').forEach(function(r){r.remove();});
+    items.forEach(function(it){var r=document.createElement('div');r.className='row'+(hl&&hl.indexOf(it.sk)>=0?' hl new':'');r.setAttribute('role','row');
+      [it.pk,it.sk,it.v].forEach(function(v){var c=document.createElement('div');c.setAttribute('role','cell');c.textContent=v;r.appendChild(c);});tbl.appendChild(r);});}
+  function reset(){items=[{pk:'catalog#prod',sk:'ns#sales',v:'1'},{pk:'catalog#prod',sk:'name#ns#sales',v:'-'}];log.innerHTML='';
+    say('info','Start: one namespace "sales" and its name-sentinel item.');render();}
+  function find(sk){return items.filter(function(i){return i.sk===sk;})[0];}
+  document.getElementById('bCreate').onclick=function(){
+    say('info','TransactWriteItems: put table + put name sentinel, both "if not exists".');
+    if(find('name#tbl#orders')){say('bad','Rejected: name "orders" already taken. Nothing was written.');return;}
+    items.push({pk:'catalog#prod',sk:'tbl#orders',v:'1'},{pk:'catalog#prod',sk:'name#tbl#orders',v:'-'});
+    say('ok','Committed both items atomically. Table "orders" created at version 1.');render(['tbl#orders','name#tbl#orders']);};
+  document.getElementById('bDup').onclick=function(){
+    say('info','TransactWriteItems: put table + name sentinel "if not exists".');
+    if(find('name#tbl#orders'))say('bad','Condition failed on the name sentinel. Duplicate blocked, table untouched.');
+    else say('info','No "orders" yet. Create it first.');};
+  document.getElementById('bUpdate').onclick=function(){var t=find('tbl#orders');
+    if(!t){say('info','No "orders" yet. Create it first.');return;}
+    var cur=+t.v;say('info','Strongly consistent read: version '+cur+'. Update "if version = '+cur+'".');
+    t.v=String(cur+1);say('ok','Compare-and-set passed. Now version '+t.v+'.');render(['tbl#orders']);};
+  document.getElementById('bStale').onclick=function(){var t=find('tbl#orders');
+    if(!t){say('info','No "orders" yet. Create it first.');return;}
+    var stale=Math.max(1,+t.v-1);if(stale===+t.v){say('info','Update once first, so an older version exists.');return;}
+    say('info','Writer still holds version '+stale+'. Update "if version = '+stale+'".');
+    say('bad','Compare-and-set failed: current is '+t.v+'. Lost update prevented; client retries.');};
+  document.getElementById('bReset').onclick=reset;
+  reset();
+
+  /* PR timeline */
+  var prs=[
+    [5892,'storage','review','2026-10-28',1003,3,'Persistence: DynamoDB (atomic) entity writes, CAS and name uniqueness'],
+    [5830,'storage','merged','2026-10-27',401,0,'Persistence: DynamoDB (atomic) table schema and test harness'],
+    [5707,'storage','merged','2026-10-19',521,1,'Persistence: DynamoDB (atomic) single-table data model'],
+    [5622,'storage','merged','2026-10-05',128,0,'Persistence: Add DynamoDB backend module skeleton'],
+    [5548,'docs','merged','2026-09-18',71,0,'Docs: Explain ENABLE_SUB_CATALOG_RBAC_FOR_FEDERATED_CATALOGS in Federation docs'],
+    [5507,'auth','merged','2026-09-16',21,48,'Core: Drop redundant getOperation() overrides in AuthorizationIntent records'],
+    [5493,'auth','merged','2026-09-11',24,35,'Thread ResolvedIntent through findMissingPrivileges'],
+    [5486,'auth','merged','2026-09-10',417,196,'Deduplicate intent-to-resolved-path resolution across authorizers'],
+    [5224,'logs','merged','2026-08-04',1,2,'Use VIEW_IDENTIFIER log key on view identifier mismatch (follow-up to #5093)'],
+    [5093,'logs','merged','2026-07-30',226,101,'Introduce StructuredLogKeys constants for SLF4J addKeyValue calls']
+  ];
+  var label={storage:'Storage',auth:'Authorization',logs:'Observability',docs:'Docs'};
+  var max=Math.max.apply(null,prs.map(function(p){return p[4]+p[5];}));
+  var box=document.getElementById('prs');
+  prs.forEach(function(p){var el=document.createElement('article');el.className='pr reveal in'+(p[2]==='review'?' review':'');el.dataset.cat=p[1];
+    var top=document.createElement('div');top.className='top';
+    var a=document.createElement('a');a.href='https://github.com/apache/polaris/pull/'+p[0];a.target='_blank';a.rel='noopener';a.textContent='#'+p[0]+' '+p[6];
+    var t1=document.createElement('span');t1.className='tag';t1.textContent=label[p[1]];
+    var t2=document.createElement('span');t2.className='tag';t2.textContent=p[2]==='review'?'In review':'Merged';
+    var d=document.createElement('span');d.className='date';d.textContent=p[3];
+    [a,t1,t2,d].forEach(function(n){top.appendChild(n);});
+    var bar=document.createElement('div');bar.className='bar';bar.setAttribute('aria-hidden','true');
+    var ia=document.createElement('i');ia.className='a';ia.style.width=(p[4]/max*100)+'%';
+    var id=document.createElement('i');id.className='d';id.style.width=(p[5]/max*100)+'%';bar.appendChild(ia);bar.appendChild(id);
+    var nums=document.createElement('div');nums.className='nums';nums.textContent='+'+p[4]+'  \u2212'+p[5];
+    el.appendChild(top);el.appendChild(bar);el.appendChild(nums);box.appendChild(el);});
+  document.querySelectorAll('.filters .chip').forEach(function(b){b.addEventListener('click',function(){
+    document.querySelectorAll('.filters .chip').forEach(function(o){o.setAttribute('aria-pressed','false');});b.setAttribute('aria-pressed','true');
+    var f=b.dataset.f;box.querySelectorAll('.pr').forEach(function(el){el.classList.toggle('hidden',f!=='all'&&el.dataset.cat!==f);});});});
+})();
+</script>
+</body>
+</html>
