@@ -1,0 +1,17 @@
+title: Yuewei Zhou
+description: Software engineer working on data lakes, catalogs, and Apache Iceberg.
+url: "https://zephyrywzhou.github.io"
+baseurl: ""
+theme: minima
+author:
+  name: Yuewei Zhou
+minima:
+  social_links:
+    - { platform: github, user_url: "https://github.com/ZephyrYWZhou" }
+header_pages:
+  - about.md
+  - projects.md
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+  - jekyll-sitemap
