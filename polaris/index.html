@@ -8,11 +8,12 @@ title: Apache Polaris
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Apache Polaris &middot; Yuewei Zhou</title>
+<title>Yuewei Zhou &middot; Core Contributor, Apache Polaris</title>
 <meta name="description" content="Apache Polaris, the open catalog for Apache Iceberg, and my contributions to it: a DynamoDB storage backend, an authorization refactor, and structured logging.">
-<meta property="og:title" content="Apache Polaris &middot; Yuewei Zhou">
-<meta property="og:description" content="The open catalog for Apache Iceberg, and what I build for it.">
-<meta property="og:type" content="website">
+<meta property="og:title" content="Yuewei Zhou &middot; Core Contributor, Apache Polaris">
+<meta property="og:description" content="What I build for Apache Polaris: a DynamoDB storage backend, a unified authorization path, and structured logging.">
+<meta property="og:type" content="profile">
+<meta property="og:image" content="https://zephyrywzhou.github.io/assets/polaris/avatar.png">
 <meta property="og:url" content="https://zephyrywzhou.github.io/polaris/">
 <meta name="twitter:card" content="summary">
 <meta name="theme-color" content="#03242d">
@@ -168,6 +169,23 @@ h2{font-size:clamp(2rem,4vw,3.2rem);font-weight:620;letter-spacing:-.04em;line-h
 .pr .nums{font-size:.8rem;color:var(--muted);margin-top:6px;font-family:ui-monospace,Menlo,monospace}
 
 [aria-selected="true"] .fa-solid,[aria-pressed="true"] .fa-solid{color:inherit}
+/* personal framing */
+nav.top .navme{border-radius:50%;border:1px solid rgba(114,232,221,.6)}
+nav.top .brand .x{color:rgba(255,255,255,.45)}
+@media (max-width:720px){nav.top .brand .hide-sm{display:none}}
+.avatar{position:relative;display:inline-block;margin-bottom:14px}
+.avatar>img:first-child{width:132px;height:132px;border-radius:50%;object-fit:cover;border:3px solid #72e8dd;box-shadow:0 0 0 6px rgba(114,232,221,.18),0 .8rem 2rem rgba(0,0,0,.45)}
+.avatar .badge{position:absolute;right:-6px;bottom:-4px;width:44px;height:44px;padding:7px;border-radius:50%;background:#03242d;border:2px solid #72e8dd}
+.wins{list-style:none;padding:0;margin:0 auto;display:flex;flex-wrap:wrap;gap:10px;justify-content:center;max-width:860px}
+.wins li{background:rgba(1,22,28,.55);border:1px solid rgba(114,232,221,.45);border-radius:.4rem;padding:8px 12px;font-weight:600;font-size:.92rem;text-shadow:none}
+.wins .fa-solid{color:#72e8dd}
+h3.ctx{margin:40px 0 14px;color:var(--muted);font-size:.85rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase}
+.ctxstats .stat{box-shadow:none;background:transparent}
+.ctxstats .stat .n{color:var(--text);font-size:1.8rem}
+.stat.mine{border-width:2px}
+.minekey{border:1px dashed var(--accent);border-radius:.3rem;padding:0 6px;color:var(--accent);font-weight:600}
+.node.mine{background:color-mix(in srgb,var(--accent) 10%,var(--card));border:1.5px dashed var(--accent)}
+.node.mine small{color:var(--accent);font-weight:700}
 footer{padding:28px 0;color:rgba(255,255,255,.62);font-size:.8rem;line-height:1.6;background:linear-gradient(to bottom,#073b47,#212529);border-top:1px solid rgba(255,255,255,.08)}
 footer a{color:#a1f5ed}
 footer .wrap{display:flex;gap:16px;flex-wrap:wrap;justify-content:space-between}
@@ -183,14 +201,15 @@ footer .wrap{display:flex;gap:16px;flex-wrap:wrap;justify-content:space-between}
 
 <nav class="top" aria-label="Main">
   <div class="wrap">
-    <a class="brand" href="/"><img src="/assets/polaris/polaris-brandmark-white.svg" alt="" width="28" height="28">Yuewei Zhou</a>
+    <a class="brand" href="/"><img class="navme" src="/assets/polaris/avatar.png" alt="" width="30" height="30">Yuewei Zhou <span class="x">&times;</span> <img src="/assets/polaris/polaris-brandmark-white.svg" alt="" width="22" height="22"><span class="hide-sm">Polaris</span></a>
     <div class="links">
-      <a href="#what" class="hide-sm">Polaris</a>
       <a href="#work" class="hide-sm">My work</a>
+      <a href="#impact" class="hide-sm">Impact</a>
       <a href="#dynamo" class="hide-sm">DynamoDB</a>
-      <a href="#timeline">PRs</a>
+      <a href="#what" class="hide-sm">Where it fits</a>
+      <a href="#timeline">My PRs</a>
       <a href="/">Blog</a>
-      <a href="https://github.com/apache/polaris" target="_blank" rel="noopener" aria-label="Apache Polaris on GitHub"><i class="fa-brands fa-github" aria-hidden="true"></i></a>
+      <a href="https://github.com/ZephyrYWZhou" target="_blank" rel="noopener" aria-label="My GitHub profile"><i class="fa-brands fa-github" aria-hidden="true"></i></a>
       <button id="themeBtn" type="button" aria-label="Switch color theme"><i class="fa-solid fa-circle-half-stroke" aria-hidden="true"></i></button>
     </div>
   </div>
@@ -199,15 +218,20 @@ footer .wrap{display:flex;gap:16px;flex-wrap:wrap;justify-content:space-between}
 <header class="hero">
   <canvas id="sky" aria-hidden="true"></canvas>
   <div class="wrap">
-    <div class="eyebrow">Open source &middot; Apache Software Foundation</div>
-    <h1><img src="/assets/polaris/polaris-brandmark-white.svg" alt="" width="80" height="80"><span>Apache Polaris</span></h1>
-    <p class="lead">The open catalog for Apache Iceberg. One shared source of truth for your tables, so Spark, Trino, Flink, and more can read and write the same data safely.</p>
+    <span class="avatar"><img src="/assets/polaris/avatar.png" alt="Yuewei Zhou" width="132" height="132"><img class="badge" src="/assets/polaris/polaris-brandmark-white.svg" alt="" width="44" height="44"></span>
+    <div class="eyebrow">Core Contributor &middot; Apache Polaris</div>
+    <h1><span>Yuewei Zhou</span></h1>
+    <p class="lead">I help build <b>Apache Polaris</b>, the open catalog for Apache Iceberg. My work spans its storage, access control, and logging, through design, code, and community discussion.</p>
     <hr>
-    <p class="lead">I'm Yuewei, a core contributor. I build its storage, access control, and logging.</p>
+    <ul class="wins" aria-label="Highlights">
+      <li><i class="fa-solid fa-database" aria-hidden="true"></i>Initiated &amp; building the DynamoDB backend</li>
+      <li><i class="fa-solid fa-shield-halved" aria-hidden="true"></i>Unified authorization across 3 authorizers</li>
+      <li><i class="fa-solid fa-chart-line" aria-hidden="true"></i>Structured logging, shipped in 1.7.0</li>
+    </ul>
     <div class="cta">
-      <a class="btn primary" href="#work"><i class="fa-solid fa-rocket" aria-hidden="true"></i>See my contributions</a>
-      <a class="btn" href="https://github.com/apache/polaris" target="_blank" rel="noopener"><i class="fa-brands fa-github" aria-hidden="true"></i>Polaris on GitHub</a>
-      <a class="btn" href="https://polaris.apache.org" target="_blank" rel="noopener"><i class="fa-solid fa-globe" aria-hidden="true"></i>polaris.apache.org</a>
+      <a class="btn primary" href="#work"><i class="fa-solid fa-rocket" aria-hidden="true"></i>See my work</a>
+      <a class="btn" href="https://github.com/apache/polaris/pulls?q=is%3Apr+author%3AZephyrYWZhou" target="_blank" rel="noopener"><i class="fa-brands fa-github" aria-hidden="true"></i>My PRs on GitHub</a>
+      <a class="btn" href="https://docs.google.com/document/d/1vc7FCvznlfdBoHe0DJQo1vRzcd0AXHFX4cGrFhuiF9Y/edit" target="_blank" rel="noopener"><i class="fa-regular fa-file-lines" aria-hidden="true"></i>My design doc</a>
     </div>
   </div>
   <div class="scrollhint" aria-hidden="true"><i class="fa-solid fa-chevron-down" style="color:inherit;margin:0"></i></div>
@@ -215,62 +239,10 @@ footer .wrap{display:flex;gap:16px;flex-wrap:wrap;justify-content:space-between}
 
 <main id="main">
 
-<section id="numbers">
-  <div class="wrap">
-    <h2 class="reveal"><i class="fa-solid fa-chart-simple" aria-hidden="true"></i>By the numbers</h2>
-    <p class="sub reveal">The project, and my part in it.</p>
-    <div class="stats">
-      <div class="stat reveal"><div class="n" data-count="2100" data-suffix="+">0</div><div class="l">GitHub stars on Polaris</div></div>
-      <div class="stat reveal"><div class="n" data-count="560" data-suffix="+">0</div><div class="l">Forks</div></div>
-      <div class="stat reveal"><div class="n" data-count="180" data-suffix="+">0</div><div class="l">Contributors</div></div>
-      <div class="stat mine reveal"><div class="n" data-count="2200" data-prefix="~">0</div><div class="l"><span class="tag">mine</span> Lines changed, merged</div></div>
-      <div class="stat mine reveal"><div class="n" data-count="9">0</div><div class="l"><span class="tag">mine</span> Merged pull requests</div></div>
-      <div class="stat mine reveal"><div class="n" data-count="3">0</div><div class="l"><span class="tag">mine</span> Core areas: storage, auth, logging</div></div>
-    </div>
-  </div>
-</section>
-
-<section id="what">
-  <div class="wrap">
-    <h2 class="reveal"><i class="fa-solid fa-diagram-project" aria-hidden="true"></i>What Polaris does</h2>
-    <p class="sub reveal">Engines talk to Polaris through the standard Iceberg REST API. Polaris decides who can see what, hands out short-lived storage keys, and keeps table metadata safe. Click any box.</p>
-
-    <div class="arch reveal" role="group" aria-label="Polaris architecture">
-      <div class="col">
-        <h4><i class="fa-solid fa-gears" aria-hidden="true"></i>Engines</h4>
-        <button class="node" data-k="spark">Apache Spark</button>
-        <button class="node" data-k="trino">Trino</button>
-        <button class="node" data-k="flink">Apache Flink</button>
-        <button class="node" data-k="more">Dremio, StarRocks, Doris&hellip;</button>
-      </div>
-      <div class="wire" aria-hidden="true"></div>
-      <div class="col">
-        <h4><i class="fa-solid fa-sitemap" aria-hidden="true"></i>Catalog</h4>
-        <button class="node core" data-k="rest"><b>Polaris</b><small>Iceberg REST catalog</small></button>
-        <button class="node" data-k="rbac">Access control (RBAC)<small>my work</small></button>
-        <button class="node" data-k="creds">Credential vending</button>
-        <button class="node" data-k="logs">Structured logging<small>my work</small></button>
-      </div>
-      <div class="wire" aria-hidden="true"></div>
-      <div class="col">
-        <h4><i class="fa-solid fa-server" aria-hidden="true"></i>Metadata &amp; data</h4>
-        <button class="node" data-k="pg">PostgreSQL (JDBC)</button>
-        <button class="node" data-k="mongo">MongoDB</button>
-        <button class="node mine" data-k="ddb">Amazon DynamoDB<small>my work &middot; in progress</small></button>
-        <button class="node" data-k="obj">S3 / GCS / Azure<small>table files</small></button>
-      </div>
-    </div>
-    <div class="detail reveal" id="detail" aria-live="polite">
-      <h3>Pick a box</h3>
-      <p class="note">Each one explains its role in the stack.</p>
-    </div>
-  </div>
-</section>
-
 <section id="work">
   <div class="wrap">
     <h2 class="reveal"><i class="fa-solid fa-code-branch" aria-hidden="true"></i>My contributions</h2>
-    <p class="sub reveal">Three core areas of the catalog, through design, code, and community discussion.</p>
+    <p class="sub reveal">Three core areas of the catalog I own or reshaped.</p>
     <div class="tabs reveal" role="tablist" aria-label="Contribution areas">
       <button role="tab" aria-selected="true" aria-controls="p-ddb" id="t-ddb"><i class="fa-solid fa-database" aria-hidden="true"></i>DynamoDB backend</button>
       <button role="tab" aria-selected="false" aria-controls="p-auth" id="t-auth" tabindex="-1"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i>Authorization</button>
@@ -321,6 +293,25 @@ footer .wrap{display:flex;gap:16px;flex-wrap:wrap;justify-content:space-between}
   </div>
 </section>
 
+<section id="impact">
+  <div class="wrap">
+    <h2 class="reveal"><i class="fa-solid fa-chart-simple" aria-hidden="true"></i>My impact</h2>
+    <p class="sub reveal">What I've landed in Polaris so far.</p>
+    <div class="stats">
+      <div class="stat mine reveal"><div class="n" data-count="2200" data-prefix="~">0</div><div class="l">Lines of code merged</div></div>
+      <div class="stat mine reveal"><div class="n" data-count="3">0</div><div class="l">Core areas: storage, authorization, logging</div></div>
+      <div class="stat mine reveal"><div class="n" data-count="3">0</div><div class="l">Authorizers unified: built-in, Ranger, OPA</div></div>
+      <div class="stat mine reveal"><div class="n" data-count="55" data-prefix="~">0</div><div class="l">Shared log keys, replacing ~100 strings</div></div>
+    </div>
+    <h3 class="ctx reveal">The project I contribute to</h3>
+    <div class="stats ctxstats">
+      <div class="stat reveal"><div class="n" data-count="2100" data-suffix="+">0</div><div class="l">GitHub stars</div></div>
+      <div class="stat reveal"><div class="n" data-count="560" data-suffix="+">0</div><div class="l">Forks</div></div>
+      <div class="stat reveal"><div class="n" data-count="180" data-suffix="+">0</div><div class="l">Contributors</div></div>
+    </div>
+  </div>
+</section>
+
 <section id="dynamo">
   <div class="wrap">
     <h2 class="reveal"><i class="fa-solid fa-database" aria-hidden="true"></i>Inside the DynamoDB design</h2>
@@ -353,6 +344,43 @@ footer .wrap{display:flex;gap:16px;flex-wrap:wrap;justify-content:space-between}
       <div class="step review"><div class="dot"></div><b>Writes, CAS, uniqueness</b><span>#5892 &middot; in review</span></div>
       <div class="step"><div class="dot"></div><b>Reads &amp; listing</b><span>next</span></div>
       <div class="step"><div class="dot"></div><b>Grants &amp; full suite</b><span>next</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="what">
+  <div class="wrap">
+    <h2 class="reveal"><i class="fa-solid fa-diagram-project" aria-hidden="true"></i>Where my work fits</h2>
+    <p class="sub reveal">Polaris is the open catalog for Apache Iceberg. Engines talk to it through the Iceberg REST API, and it guards and tracks every table. The <span class="minekey">highlighted</span> boxes are the parts I built. Click any box.</p>
+
+    <div class="arch reveal" role="group" aria-label="Polaris architecture">
+      <div class="col">
+        <h4><i class="fa-solid fa-gears" aria-hidden="true"></i>Engines</h4>
+        <button class="node" data-k="spark">Apache Spark</button>
+        <button class="node" data-k="trino">Trino</button>
+        <button class="node" data-k="flink">Apache Flink</button>
+        <button class="node" data-k="more">Dremio, StarRocks, Doris&hellip;</button>
+      </div>
+      <div class="wire" aria-hidden="true"></div>
+      <div class="col">
+        <h4><i class="fa-solid fa-sitemap" aria-hidden="true"></i>Catalog</h4>
+        <button class="node core" data-k="rest"><b>Polaris</b><small>Iceberg REST catalog</small></button>
+        <button class="node mine" data-k="rbac">Access control (RBAC)<small>my work</small></button>
+        <button class="node" data-k="creds">Credential vending</button>
+        <button class="node mine" data-k="logs">Structured logging<small>my work</small></button>
+      </div>
+      <div class="wire" aria-hidden="true"></div>
+      <div class="col">
+        <h4><i class="fa-solid fa-server" aria-hidden="true"></i>Metadata &amp; data</h4>
+        <button class="node" data-k="pg">PostgreSQL (JDBC)</button>
+        <button class="node" data-k="mongo">MongoDB</button>
+        <button class="node mine" data-k="ddb">Amazon DynamoDB<small>my work &middot; in progress</small></button>
+        <button class="node" data-k="obj">S3 / GCS / Azure<small>table files</small></button>
+      </div>
+    </div>
+    <div class="detail reveal" id="detail" aria-live="polite">
+      <h3>Pick a box</h3>
+      <p class="note">Each one explains its role in the stack.</p>
     </div>
   </div>
 </section>
