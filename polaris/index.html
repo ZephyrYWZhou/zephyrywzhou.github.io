@@ -15,56 +15,73 @@ title: Apache Polaris
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://zephyrywzhou.github.io/polaris/">
 <meta name="twitter:card" content="summary">
-<meta name="theme-color" content="#0b1020">
+<meta name="theme-color" content="#03242d">
 <link rel="canonical" href="https://zephyrywzhou.github.io/polaris/">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath fill='%237dd3fc' d='M16 1l3.2 11.8L31 16l-11.8 3.2L16 31l-3.2-11.8L1 16l11.8-3.2z'/%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" href="/assets/polaris/polaris-brandmark-white.svg">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
 <style>
+/* Palette and type follow polaris.apache.org: deep teal, mint accent, Helvetica Neue. */
 :root{
-  --bg:#0b1020;--bg2:#111833;--card:#151d3b;--line:#26305a;
-  --text:#e7ecff;--muted:#9aa6d1;--accent:#7dd3fc;--accent2:#a78bfa;--good:#4ade80;--warn:#fbbf24;
-  --radius:16px;--shadow:0 10px 30px rgba(0,0,0,.35);
+  --bg:#031f27;--bg2:#073b47;--card:#0a2f39;--line:rgba(114,232,221,.18);
+  --text:#ffffff;--muted:rgba(255,255,255,.72);--accent:#72e8dd;--accent2:#a1f5ed;--ink:#052f39;
+  --good:#72e8dd;--warn:#ffc107;--bad:#ff8a8a;--nav:#03242d;
+  --radius:.6rem;--shadow:0 .5rem 1.4rem rgba(0,0,0,.22);
+  --display:"Helvetica Neue",Helvetica,Arial,sans-serif;
 }
 :root[data-theme="light"]{
-  --bg:#f7f8fc;--bg2:#eef1fa;--card:#ffffff;--line:#d9def0;
-  --text:#141a33;--muted:#56608a;--accent:#0369a1;--accent2:#6d28d9;--good:#15803d;--warn:#b45309;
-  --shadow:0 8px 24px rgba(20,26,51,.08);
+  --bg:#ffffff;--bg2:#eefaf9;--card:#ffffff;--line:#cfe9e6;
+  --text:#0b333d;--muted:#4a6a72;--accent:#0b7a71;--accent2:#095e57;--ink:#052f39;
+  --good:#0b7a71;--warn:#b45309;--bad:#b91c1c;--nav:#03242d;
+  --shadow:0 .5rem 1.4rem rgba(11,51,61,.08);
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{margin:0;font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text);transition:background .3s,color .3s}
+body{margin:0;font:16px/1.65 system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;background:var(--bg);color:var(--text);transition:background .3s,color .3s}
+h1,h2,h3{font-family:var(--display)}
+.fa-solid,.fa-brands,.fa-regular{margin-right:.45em;color:var(--accent)}
 a{color:var(--accent)}
 a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:6px}
 .wrap{max-width:1100px;margin:0 auto;padding:0 20px}
 .skip{position:absolute;left:-999px}.skip:focus{left:12px;top:12px;z-index:99;background:var(--card);padding:8px 12px}
 
 /* nav */
-nav.top{position:sticky;top:0;z-index:20;backdrop-filter:blur(10px);background:color-mix(in srgb,var(--bg) 75%,transparent);border-bottom:1px solid var(--line)}
-nav.top .wrap{display:flex;align-items:center;gap:18px;height:58px}
-nav.top .brand{font-weight:700;color:var(--text);text-decoration:none;display:flex;align-items:center;gap:8px}
-nav.top .links{display:flex;gap:16px;margin-left:auto;align-items:center}
-nav.top .links a{color:var(--muted);text-decoration:none;font-size:.95rem}
-nav.top .links a:hover,nav.top .links a.active{color:var(--text)}
-#themeBtn{background:none;border:1px solid var(--line);color:var(--text);border-radius:999px;padding:4px 10px;cursor:pointer}
+nav.top{position:sticky;top:0;z-index:20;background:var(--nav);border-bottom:1px solid rgba(255,255,255,.08)}
+nav.top .wrap{display:flex;align-items:center;gap:18px;height:64px}
+nav.top .brand{font-family:var(--display);font-size:1.15rem;color:#fff;text-decoration:none;display:flex;align-items:center;gap:10px}
+nav.top .brand img{width:28px;height:28px}
+nav.top .links{display:flex;gap:18px;margin-left:auto;align-items:center}
+nav.top .links a{color:rgba(255,255,255,.62);text-decoration:none;font-size:.95rem}
+nav.top .links a:hover{color:#fff}
+nav.top .links .fa-brands{color:inherit;margin:0}
+#themeBtn{background:none;border:1px solid rgba(255,255,255,.25);color:#fff;border-radius:.4rem;padding:5px 10px;cursor:pointer}
+#themeBtn .fa-solid{color:inherit;margin:0}
 @media (max-width:720px){nav.top .links a.hide-sm{display:none}}
 
 /* hero */
-header.hero{position:relative;min-height:88vh;display:flex;align-items:center;overflow:hidden;border-bottom:1px solid var(--line)}
-#sky{position:absolute;inset:0;width:100%;height:100%}
-.hero .wrap{position:relative;z-index:2}
-.eyebrow{color:var(--accent);font-weight:600;letter-spacing:.12em;text-transform:uppercase;font-size:.8rem}
-.hero h1{font-size:clamp(2.4rem,6vw,4.4rem);line-height:1.05;margin:.3em 0 .25em}
-.grad{background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
-.hero p.lead{font-size:clamp(1.05rem,2vw,1.3rem);color:var(--muted);max-width:640px}
-.cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}
-.btn{display:inline-flex;align-items:center;gap:8px;padding:11px 18px;border-radius:999px;text-decoration:none;font-weight:600;border:1px solid var(--line);color:var(--text);background:var(--card);transition:transform .15s,border-color .15s}
-.btn:hover{transform:translateY(-2px);border-color:var(--accent)}
-.btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#0b1020;border:0}
-.scrollhint{position:absolute;bottom:22px;left:50%;transform:translateX(-50%);color:var(--muted);font-size:.85rem;z-index:2}
+header.hero{position:relative;isolation:isolate;min-height:clamp(36rem,48vw,48rem);display:grid;place-items:center;overflow:hidden;color:#fff;
+  background:#031f27 url(/assets/polaris/Polaris-Catalog-hero-background.jpg) no-repeat 50% 100%;background-size:cover}
+header.hero::before{content:"";position:absolute;inset:0;z-index:0;background:linear-gradient(to bottom,rgba(1,19,25,.35),rgba(1,19,25,.05) 45%,rgba(1,19,25,.3))}
+#sky{position:absolute;inset:0;width:100%;height:100%;z-index:1}
+.hero .wrap{position:relative;z-index:2;text-align:center;padding:4rem 20px 8rem;text-shadow:0 .2rem 1rem rgba(0,0,0,.55)}
+.eyebrow{color:#a1f5ed;font-weight:700;letter-spacing:.14em;text-transform:uppercase;font-size:.8rem}
+.hero h1{display:flex;gap:.22em;align-items:center;justify-content:center;font-family:var(--display);font-weight:400;font-size:clamp(2.6rem,6.5vw,5.5rem);line-height:1;margin:.35em 0 .3em;color:#fff}
+.hero h1 img{width:.9em;height:.9em;filter:drop-shadow(0 .2rem 1rem rgba(0,0,0,.25))}
+.hero hr{width:70vw;max-width:16rem;margin:1.4rem auto;border:0;border-top:1px solid rgba(255,255,255,.82);border-bottom:1px solid rgba(0,0,0,.18)}
+.hero p.lead{font-size:clamp(1.1rem,1.8vw,1.4rem);color:rgba(255,255,255,.92);max-width:720px;margin:.6rem auto}
+.cta{display:flex;gap:.8rem;flex-wrap:wrap;justify-content:center;margin-top:28px}
+.btn{display:inline-flex;min-height:3rem;align-items:center;gap:.6rem;padding:.7rem 1.05rem;border-radius:.4rem;text-decoration:none;font-weight:700;font-size:.92rem;
+  border:1px solid rgba(255,255,255,.52);color:#fff;background:rgba(1,22,28,.5);box-shadow:var(--shadow);text-shadow:none;transition:background-color .16s,border-color .16s,transform .16s}
+.btn .fa-solid,.btn .fa-brands{color:inherit;margin:0}
+.btn:hover{border-color:rgba(255,255,255,.85);background:rgba(255,255,255,.14);transform:translateY(-2px)}
+.btn.primary{color:#052f39;border-color:#72e8dd;background:#72e8dd}
+.btn.primary:hover{border-color:#a1f5ed;background:#a1f5ed}
+.btn:focus-visible{outline:3px solid #7bf3e8;outline-offset:3px}
+.scrollhint{position:absolute;bottom:22px;left:50%;transform:translateX(-50%);color:rgba(255,255,255,.75);font-size:.85rem;z-index:2}
 
 /* sections */
 section{padding:84px 0;border-bottom:1px solid var(--line)}
 section:nth-of-type(even){background:var(--bg2)}
-h2{font-size:clamp(1.7rem,3.5vw,2.4rem);margin:0 0 .3em}
+h2{font-size:clamp(2rem,4vw,3.2rem);font-weight:620;letter-spacing:-.04em;line-height:1.05;margin:0 0 .4em}
 .sub{color:var(--muted);max-width:720px;margin:0 0 36px}
 .reveal{opacity:0;transform:translateY(18px);transition:opacity .7s,transform .7s}
 .reveal.in{opacity:1;transform:none}
@@ -72,7 +89,7 @@ h2{font-size:clamp(1.7rem,3.5vw,2.4rem);margin:0 0 .3em}
 /* stats */
 .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px}
 .stat{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow)}
-.stat .n{font-size:2.2rem;font-weight:800;line-height:1}
+.stat .n{font-family:var(--display);font-size:2.4rem;font-weight:500;letter-spacing:-.03em;line-height:1;color:var(--accent)}
 .stat .l{color:var(--muted);font-size:.92rem;margin-top:6px}
 .stat.mine{border-color:color-mix(in srgb,var(--accent2) 55%,var(--line))}
 .tag{display:inline-block;font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:999px;border:1px solid var(--line);color:var(--muted)}
@@ -98,8 +115,8 @@ h2{font-size:clamp(1.7rem,3.5vw,2.4rem);margin:0 0 .3em}
 
 /* tabs / workstreams */
 .tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
-.tabs button,.chip{background:var(--card);border:1px solid var(--line);color:var(--text);border-radius:999px;padding:8px 14px;cursor:pointer;font:inherit;font-size:.92rem}
-.tabs button[aria-selected="true"],.chip[aria-pressed="true"]{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#0b1020;border-color:transparent;font-weight:600}
+.tabs button,.chip{background:var(--card);border:1px solid var(--line);color:var(--text);border-radius:.4rem;padding:8px 14px;cursor:pointer;font:inherit;font-size:.92rem}
+.tabs button[aria-selected="true"],.chip[aria-pressed="true"]{background:#72e8dd;color:#052f39;border-color:#72e8dd;font-weight:700}
 .panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:28px;box-shadow:var(--shadow)}
 .panel h3{margin-top:0;font-size:1.4rem}
 .panel ul{padding-left:20px}
@@ -118,7 +135,7 @@ h2{font-size:clamp(1.7rem,3.5vw,2.4rem);margin:0 0 .3em}
 @keyframes pop{from{background:color-mix(in srgb,var(--good) 35%,transparent)}}
 .sim{display:flex;flex-direction:column;gap:12px}
 .log{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:12px;font-family:ui-monospace,Menlo,monospace;font-size:.82rem;min-height:150px;max-height:230px;overflow:auto}
-.log .ok{color:var(--good)}.log .bad{color:#f87171}.log .info{color:var(--muted)}
+.log .ok{color:var(--good)}.log .bad{color:var(--bad)}.log .info{color:var(--muted)}
 .simbtns{display:flex;gap:8px;flex-wrap:wrap}
 .note{color:var(--muted);font-size:.85rem}
 
@@ -147,10 +164,12 @@ h2{font-size:clamp(1.7rem,3.5vw,2.4rem);margin:0 0 .3em}
 .pr .top a:hover{color:var(--accent)}
 .pr .date{color:var(--muted);font-size:.85rem;margin-left:auto}
 .bar{display:flex;height:6px;border-radius:4px;overflow:hidden;margin-top:10px;background:var(--bg2)}
-.bar i{display:block}.bar .a{background:var(--good)}.bar .d{background:#f87171}
+.bar i{display:block}.bar .a{background:var(--good)}.bar .d{background:var(--bad)}
 .pr .nums{font-size:.8rem;color:var(--muted);margin-top:6px;font-family:ui-monospace,Menlo,monospace}
 
-footer{padding:40px 0;color:var(--muted);font-size:.9rem}
+[aria-selected="true"] .fa-solid,[aria-pressed="true"] .fa-solid{color:inherit}
+footer{padding:28px 0;color:rgba(255,255,255,.62);font-size:.8rem;line-height:1.6;background:linear-gradient(to bottom,#073b47,#212529);border-top:1px solid rgba(255,255,255,.08)}
+footer a{color:#a1f5ed}
 footer .wrap{display:flex;gap:16px;flex-wrap:wrap;justify-content:space-between}
 
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}.reveal{opacity:1;transform:none}}
@@ -164,14 +183,15 @@ footer .wrap{display:flex;gap:16px;flex-wrap:wrap;justify-content:space-between}
 
 <nav class="top" aria-label="Main">
   <div class="wrap">
-    <a class="brand" href="/">&#10022; Yuewei Zhou</a>
+    <a class="brand" href="/"><img src="/assets/polaris/polaris-brandmark-white.svg" alt="" width="28" height="28">Yuewei Zhou</a>
     <div class="links">
       <a href="#what" class="hide-sm">Polaris</a>
       <a href="#work" class="hide-sm">My work</a>
       <a href="#dynamo" class="hide-sm">DynamoDB</a>
       <a href="#timeline">PRs</a>
       <a href="/">Blog</a>
-      <button id="themeBtn" type="button" aria-label="Switch color theme">&#9680;</button>
+      <a href="https://github.com/apache/polaris" target="_blank" rel="noopener" aria-label="Apache Polaris on GitHub"><i class="fa-brands fa-github" aria-hidden="true"></i></a>
+      <button id="themeBtn" type="button" aria-label="Switch color theme"><i class="fa-solid fa-circle-half-stroke" aria-hidden="true"></i></button>
     </div>
   </div>
 </nav>
@@ -180,23 +200,24 @@ footer .wrap{display:flex;gap:16px;flex-wrap:wrap;justify-content:space-between}
   <canvas id="sky" aria-hidden="true"></canvas>
   <div class="wrap">
     <div class="eyebrow">Open source &middot; Apache Software Foundation</div>
-    <h1>Apache <span class="grad">Polaris</span></h1>
+    <h1><img src="/assets/polaris/polaris-brandmark-white.svg" alt="" width="80" height="80"><span>Apache Polaris</span></h1>
     <p class="lead">The open catalog for Apache Iceberg. One shared source of truth for your tables, so Spark, Trino, Flink, and more can read and write the same data safely.</p>
+    <hr>
     <p class="lead">I'm Yuewei, a core contributor. I build its storage, access control, and logging.</p>
     <div class="cta">
-      <a class="btn primary" href="#work">See my contributions &rarr;</a>
-      <a class="btn" href="https://github.com/apache/polaris" target="_blank" rel="noopener">Polaris on GitHub</a>
-      <a class="btn" href="https://polaris.apache.org" target="_blank" rel="noopener">polaris.apache.org</a>
+      <a class="btn primary" href="#work"><i class="fa-solid fa-rocket" aria-hidden="true"></i>See my contributions</a>
+      <a class="btn" href="https://github.com/apache/polaris" target="_blank" rel="noopener"><i class="fa-brands fa-github" aria-hidden="true"></i>Polaris on GitHub</a>
+      <a class="btn" href="https://polaris.apache.org" target="_blank" rel="noopener"><i class="fa-solid fa-globe" aria-hidden="true"></i>polaris.apache.org</a>
     </div>
   </div>
-  <div class="scrollhint" aria-hidden="true">scroll &darr;</div>
+  <div class="scrollhint" aria-hidden="true"><i class="fa-solid fa-chevron-down" style="color:inherit;margin:0"></i></div>
 </header>
 
 <main id="main">
 
 <section id="numbers">
   <div class="wrap">
-    <h2 class="reveal">By the numbers</h2>
+    <h2 class="reveal"><i class="fa-solid fa-chart-simple" aria-hidden="true"></i>By the numbers</h2>
     <p class="sub reveal">The project, and my part in it.</p>
     <div class="stats">
       <div class="stat reveal"><div class="n" data-count="2100" data-suffix="+">0</div><div class="l">GitHub stars on Polaris</div></div>
@@ -211,12 +232,12 @@ footer .wrap{display:flex;gap:16px;flex-wrap:wrap;justify-content:space-between}
 
 <section id="what">
   <div class="wrap">
-    <h2 class="reveal">What Polaris does</h2>
+    <h2 class="reveal"><i class="fa-solid fa-diagram-project" aria-hidden="true"></i>What Polaris does</h2>
     <p class="sub reveal">Engines talk to Polaris through the standard Iceberg REST API. Polaris decides who can see what, hands out short-lived storage keys, and keeps table metadata safe. Click any box.</p>
 
     <div class="arch reveal" role="group" aria-label="Polaris architecture">
       <div class="col">
-        <h4>Engines</h4>
+        <h4><i class="fa-solid fa-gears" aria-hidden="true"></i>Engines</h4>
         <button class="node" data-k="spark">Apache Spark</button>
         <button class="node" data-k="trino">Trino</button>
         <button class="node" data-k="flink">Apache Flink</button>
@@ -224,7 +245,7 @@ footer .wrap{display:flex;gap:16px;flex-wrap:wrap;justify-content:space-between}
       </div>
       <div class="wire" aria-hidden="true"></div>
       <div class="col">
-        <h4>Catalog</h4>
+        <h4><i class="fa-solid fa-sitemap" aria-hidden="true"></i>Catalog</h4>
         <button class="node core" data-k="rest"><b>Polaris</b><small>Iceberg REST catalog</small></button>
         <button class="node" data-k="rbac">Access control (RBAC)<small>my work</small></button>
         <button class="node" data-k="creds">Credential vending</button>
@@ -232,7 +253,7 @@ footer .wrap{display:flex;gap:16px;flex-wrap:wrap;justify-content:space-between}
       </div>
       <div class="wire" aria-hidden="true"></div>
       <div class="col">
-        <h4>Metadata &amp; data</h4>
+        <h4><i class="fa-solid fa-server" aria-hidden="true"></i>Metadata &amp; data</h4>
         <button class="node" data-k="pg">PostgreSQL (JDBC)</button>
         <button class="node" data-k="mongo">MongoDB</button>
         <button class="node mine" data-k="ddb">Amazon DynamoDB<small>my work &middot; in progress</small></button>
@@ -248,13 +269,13 @@ footer .wrap{display:flex;gap:16px;flex-wrap:wrap;justify-content:space-between}
 
 <section id="work">
   <div class="wrap">
-    <h2 class="reveal">My contributions</h2>
+    <h2 class="reveal"><i class="fa-solid fa-code-branch" aria-hidden="true"></i>My contributions</h2>
     <p class="sub reveal">Three core areas of the catalog, through design, code, and community discussion.</p>
     <div class="tabs reveal" role="tablist" aria-label="Contribution areas">
-      <button role="tab" aria-selected="true" aria-controls="p-ddb" id="t-ddb">DynamoDB backend</button>
-      <button role="tab" aria-selected="false" aria-controls="p-auth" id="t-auth" tabindex="-1">Authorization</button>
-      <button role="tab" aria-selected="false" aria-controls="p-log" id="t-log" tabindex="-1">Observability</button>
-      <button role="tab" aria-selected="false" aria-controls="p-docs" id="t-docs" tabindex="-1">Docs</button>
+      <button role="tab" aria-selected="true" aria-controls="p-ddb" id="t-ddb"><i class="fa-solid fa-database" aria-hidden="true"></i>DynamoDB backend</button>
+      <button role="tab" aria-selected="false" aria-controls="p-auth" id="t-auth" tabindex="-1"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i>Authorization</button>
+      <button role="tab" aria-selected="false" aria-controls="p-log" id="t-log" tabindex="-1"><i class="fa-solid fa-chart-line" aria-hidden="true"></i>Observability</button>
+      <button role="tab" aria-selected="false" aria-controls="p-docs" id="t-docs" tabindex="-1"><i class="fa-solid fa-book" aria-hidden="true"></i>Docs</button>
     </div>
 
     <div class="panel reveal" role="tabpanel" id="p-ddb" aria-labelledby="t-ddb">
@@ -267,7 +288,7 @@ footer .wrap{display:flex;gap:16px;flex-wrap:wrap;justify-content:space-between}
         <li><b>Single-table design:</b> typed items by sort key, a name-sentinel item for uniqueness, and sparse indexes for listing and grants.</li>
         <li><b>Correct by design:</b> every correctness read is a strongly consistent single-key read. Indexes are used only for discovery.</li>
       </ul>
-      <p><a href="https://docs.google.com/document/d/1vc7FCvznlfdBoHe0DJQo1vRzcd0AXHFX4cGrFhuiF9Y/edit" target="_blank" rel="noopener">Read the design doc &rarr;</a> &nbsp;&middot;&nbsp; <a href="#dynamo">Try the interactive demo &darr;</a></p>
+      <p><a href="https://docs.google.com/document/d/1vc7FCvznlfdBoHe0DJQo1vRzcd0AXHFX4cGrFhuiF9Y/edit" target="_blank" rel="noopener"><i class="fa-regular fa-file-lines" aria-hidden="true"></i>Read the design doc</a> &nbsp;&middot;&nbsp; <a href="#dynamo">Try the interactive demo &darr;</a></p>
     </div>
 
     <div class="panel reveal" role="tabpanel" id="p-auth" aria-labelledby="t-auth" hidden>
@@ -302,7 +323,7 @@ footer .wrap{display:flex;gap:16px;flex-wrap:wrap;justify-content:space-between}
 
 <section id="dynamo">
   <div class="wrap">
-    <h2 class="reveal">Inside the DynamoDB design</h2>
+    <h2 class="reveal"><i class="fa-solid fa-database" aria-hidden="true"></i>Inside the DynamoDB design</h2>
     <p class="sub reveal">A small simulation of how the backend keeps names unique and updates safe. Press the buttons and watch the table.</p>
 
     <div class="explorer reveal">
@@ -338,7 +359,7 @@ footer .wrap{display:flex;gap:16px;flex-wrap:wrap;justify-content:space-between}
 
 <section id="timeline">
   <div class="wrap">
-    <h2 class="reveal">Every pull request</h2>
+    <h2 class="reveal"><i class="fa-solid fa-code-pull-request" aria-hidden="true"></i>Every pull request</h2>
     <p class="sub reveal">Merged and in review, newest first. Bars show lines added and removed.</p>
     <div class="filters reveal" role="group" aria-label="Filter pull requests">
       <button class="chip" aria-pressed="true" data-f="all">All</button>
@@ -356,7 +377,7 @@ footer .wrap{display:flex;gap:16px;flex-wrap:wrap;justify-content:space-between}
 <footer>
   <div class="wrap">
     <span>&copy; 2026 Yuewei Zhou &middot; <a href="/">Home</a> &middot; <a href="https://github.com/ZephyrYWZhou" target="_blank" rel="noopener">GitHub</a></span>
-    <span>Apache Polaris, Apache Iceberg, and Apache are trademarks of the Apache Software Foundation. This is a personal page, not an official ASF site.</span>
+    <span>Apache Polaris, Apache Iceberg, and Apache are trademarks of the Apache Software Foundation. This is a personal page, not an official ASF site. Polaris logo and hero art from the Apache Polaris website, under the Apache License 2.0.</span>
   </div>
 </footer>
 
@@ -376,22 +397,22 @@ footer .wrap{display:flex;gap:16px;flex-wrap:wrap;justify-content:space-between}
   var dipper=[[.78,.22],[.74,.32],[.71,.41],[.66,.48],[.61,.58],[.69,.63],[.72,.54]];
   function size(){dpr=window.devicePixelRatio||1;W=c.clientWidth;H=c.clientHeight;c.width=W*dpr;c.height=H*dpr;x.setTransform(dpr,0,0,dpr,0,0);
     stars=[];var n=Math.min(260,Math.floor(W*H/5200));for(var i=0;i<n;i++)stars.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.3+.2,t:Math.random()*6,z:Math.random()*.8+.2});}
-  function light(){return root.dataset.theme==='light';}
+  function light(){return false;} // hero art is always dark
   function draw(time){
     x.clearRect(0,0,W,H);
     var sc = light() ? '20,26,51' : '231,236,255';
     stars.forEach(function(s){var a=reduce?.7:.35+.45*Math.abs(Math.sin(time/1400+s.t));
       x.fillStyle='rgba('+sc+','+a+')';x.beginPath();x.arc(s.x+mx*s.z*12,s.y+my*s.z*12,s.r,0,6.283);x.fill();});
     var pts=dipper.map(function(p){return[p[0]*W+mx*20,p[1]*H+my*20];});
-    x.strokeStyle=light()?'rgba(3,105,161,.35)':'rgba(125,211,252,.35)';x.lineWidth=1.2;x.beginPath();
+    x.strokeStyle=light()?'rgba(3,105,161,.35)':'rgba(114,232,221,.45)';x.lineWidth=1.2;x.beginPath();
     pts.forEach(function(p,i){i?x.lineTo(p[0],p[1]):x.moveTo(p[0],p[1]);});x.lineTo(pts[3][0],pts[3][1]);x.stroke();
     pts.forEach(function(p,i){x.fillStyle=light()?'#0369a1':'#e7ecff';x.beginPath();x.arc(p[0],p[1],i?2.2:0,0,6.283);x.fill();});
     var px=pts[0][0],py=pts[0][1],pulse=reduce?1:1+.12*Math.sin(time/700);
-    var g=x.createRadialGradient(px,py,0,px,py,46*pulse);g.addColorStop(0,light()?'rgba(3,105,161,.55)':'rgba(125,211,252,.9)');g.addColorStop(1,'rgba(125,211,252,0)');
+    var g=x.createRadialGradient(px,py,0,px,py,46*pulse);g.addColorStop(0,light()?'rgba(3,105,161,.55)':'rgba(114,232,221,.9)');g.addColorStop(1,'rgba(114,232,221,0)');
     x.fillStyle=g;x.beginPath();x.arc(px,py,46*pulse,0,6.283);x.fill();
     x.fillStyle=light()?'#0369a1':'#ffffff';x.beginPath();
     for(var k=0;k<8;k++){var ang=k*Math.PI/4,rr=k%2?3:12;x.lineTo(px+Math.cos(ang)*rr,py+Math.sin(ang)*rr);}x.closePath();x.fill();
-    x.font='600 12px -apple-system,Segoe UI,sans-serif';x.fillStyle=light()?'#56608a':'#9aa6d1';x.fillText('Polaris',px+16,py-12);
+    x.font='600 12px -apple-system,Segoe UI,sans-serif';x.fillStyle=light()?'#56608a':"rgba(255,255,255,.85)";x.fillText('Polaris',px+16,py-12);
     if(!reduce)requestAnimationFrame(draw);
   }
   size();window.addEventListener('resize',function(){size();if(reduce)draw(0);});
