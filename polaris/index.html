@@ -235,7 +235,7 @@ footer .wrap{display:flex;gap:16px;flex-wrap:wrap;justify-content:space-between}
     <ul class="wins" aria-label="Highlights">
       <li><i class="fa-solid fa-database" aria-hidden="true"></i>Initiated &amp; building the DynamoDB backend</li>
       <li><i class="fa-solid fa-shield-halved" aria-hidden="true"></i>Unified authorization across 3 authorizers</li>
-      <li><i class="fa-solid fa-chart-line" aria-hidden="true"></i>Structured logging, shipped in 1.7.0</li>
+      <li><i class="fa-solid fa-chart-line" aria-hidden="true"></i>Structured logging, shipped in 1.8.0</li>
     </ul>
     <div class="cta">
       <a class="btn primary" href="#work"><i class="fa-solid fa-rocket" aria-hidden="true"></i>See my work</a>
@@ -274,7 +274,7 @@ footer .wrap{display:flex;gap:16px;flex-wrap:wrap;justify-content:space-between}
 
     <div class="panel reveal" role="tabpanel" id="p-auth" aria-labelledby="t-auth" hidden>
       <h3>A cleaner authorization path</h3>
-      <div class="meta"><span class="tag">3 merged PRs</span><span class="tag">Core</span></div>
+      <div class="meta"><span class="tag">3 merged PRs</span><span class="tag">Shipped in Polaris 1.8.0</span></div>
       <p>Every catalog call runs a permission check. That logic was repeated across authorizers. I reworked it into one explicit, shared path.</p>
       <ul>
         <li>Unified intent-to-path resolution across <b>3 authorizers</b>: Polaris built-in, Apache Ranger, and OPA.</li>
@@ -285,7 +285,7 @@ footer .wrap{display:flex;gap:16px;flex-wrap:wrap;justify-content:space-between}
 
     <div class="panel reveal" role="tabpanel" id="p-log" aria-labelledby="t-log" hidden>
       <h3>One source of truth for logs</h3>
-      <div class="meta"><span class="tag">Shipped in Polaris 1.7.0</span></div>
+      <div class="meta"><span class="tag">Shipped in Polaris 1.8.0</span></div>
       <p>Log keys were typed as loose strings all over the code. That makes logs hard to search and easy to break.</p>
       <ul>
         <li>Introduced <code>StructuredLogKeys</code>: about <b>55</b> shared keys for SLF4J structured logging.</li>
@@ -474,7 +474,7 @@ footer .wrap{display:flex;gap:16px;flex-wrap:wrap;justify-content:space-between}
     rest:['Polaris core','Implements the open Iceberg REST catalog API. It tracks every table, namespace, and version, so engines agree on what the data is.'],
     rbac:['Access control (my work)','Role-based permissions decide who can read or change each catalog, namespace, and table. I unified how permission checks resolve across the built-in, Ranger, and OPA authorizers.'],
     creds:['Credential vending','Polaris hands engines short-lived, scoped storage keys, so they only touch the files they are allowed to.'],
-    logs:['Structured logging (my work)','Every log line uses shared, typed keys. I introduced StructuredLogKeys, shipped in Polaris 1.7.0.'],
+    logs:['Structured logging (my work)','Every log line uses shared, typed keys. I introduced StructuredLogKeys, shipped in Polaris 1.8.0.'],
     pg:['PostgreSQL','The common relational backend for catalog metadata, through JDBC.'],
     mongo:['MongoDB','A NoSQL backend option for catalog metadata.'],
     ddb:['Amazon DynamoDB (my work, in progress)','A new serverless backend I designed and am building. Auto-scaling and highly available, with no database to operate.'],
