@@ -307,7 +307,7 @@ footer .wrap{display:flex;gap:16px;flex-wrap:wrap;justify-content:space-between}
     <h2 class="reveal"><i class="fa-solid fa-chart-simple" aria-hidden="true"></i>My impact</h2>
     <p class="sub reveal">What I've landed in Polaris so far.</p>
     <div class="stats">
-      <div class="stat mine reveal"><div class="n" data-count="2200" data-prefix="~">0</div><div class="l">Lines of code merged</div></div>
+      <div class="stat mine reveal"><div class="n" data-count="3600" data-prefix="~">0</div><div class="l">Lines of code merged</div></div>
       <div class="stat mine reveal"><div class="n" data-count="3">0</div><div class="l">Core areas: storage, authorization, logging</div></div>
       <div class="stat mine reveal"><div class="n" data-count="3">0</div><div class="l">Authorizers unified: built-in, Ranger, OPA</div></div>
       <div class="stat mine reveal"><div class="n" data-count="55" data-prefix="~">0</div><div class="l">Shared log keys, replacing ~100 strings</div></div>
@@ -350,7 +350,8 @@ footer .wrap{display:flex;gap:16px;flex-wrap:wrap;justify-content:space-between}
       <div class="step done"><div class="dot"></div><b>Module skeleton</b><span>#5622 &middot; merged</span></div>
       <div class="step done"><div class="dot"></div><b>Data model</b><span>#5707 &middot; merged</span></div>
       <div class="step done"><div class="dot"></div><b>Schema + test harness</b><span>#5830 &middot; merged</span></div>
-      <div class="step review"><div class="dot"></div><b>Writes, CAS, uniqueness</b><span>#5892 &middot; in review</span></div>
+      <div class="step done"><div class="dot"></div><b>Writes, CAS, uniqueness</b><span>#5892 &middot; merged</span></div>
+      <div class="step review"><div class="dot"></div><b>Children index by id</b><span>#6006 &middot; draft</span></div>
       <div class="step"><div class="dot"></div><b>Reads &amp; listing</b><span>next</span></div>
       <div class="step"><div class="dot"></div><b>Grants &amp; full suite</b><span>next</span></div>
     </div>
@@ -397,7 +398,7 @@ footer .wrap{display:flex;gap:16px;flex-wrap:wrap;justify-content:space-between}
 <section id="timeline">
   <div class="wrap">
     <h2 class="reveal"><i class="fa-solid fa-code-pull-request" aria-hidden="true"></i>Every pull request</h2>
-    <p class="sub reveal">Merged and in review, newest first. Bars show lines added and removed.</p>
+    <p class="sub reveal">Merged and in progress, newest first. Bars show lines added and removed.</p>
     <div class="filters reveal" role="group" aria-label="Filter pull requests">
       <button class="chip" aria-pressed="true" data-f="all">All</button>
       <button class="chip" aria-pressed="false" data-f="storage">Storage</button>
@@ -525,7 +526,9 @@ footer .wrap{display:flex;gap:16px;flex-wrap:wrap;justify-content:space-between}
 
   /* PR timeline */
   var prs=[
-    [5892,'storage','review','2026-10-28',1003,3,'Persistence: DynamoDB (atomic) entity writes, CAS and name uniqueness'],
+    [6006,'storage','draft','2026-11-06',55,28,'Persistence: DynamoDB (atomic) sort the children index by entity id'],
+    [5892,'storage','merged','2026-11-07',1244,13,'Persistence: DynamoDB (atomic) entity writes, CAS and name uniqueness'],
+    [5986,'storage','merged','2026-11-05',146,23,'Core: Report a rename that loses the race for its name as ENTITY_ALREADY_EXISTS'],
     [5830,'storage','merged','2026-10-27',401,0,'Persistence: DynamoDB (atomic) table schema and test harness'],
     [5707,'storage','merged','2026-10-19',521,1,'Persistence: DynamoDB (atomic) single-table data model'],
     [5622,'storage','merged','2026-10-05',128,0,'Persistence: Add DynamoDB backend module skeleton'],
@@ -539,11 +542,11 @@ footer .wrap{display:flex;gap:16px;flex-wrap:wrap;justify-content:space-between}
   var label={storage:'Storage',auth:'Authorization',logs:'Observability',docs:'Docs'};
   var max=Math.max.apply(null,prs.map(function(p){return p[4]+p[5];}));
   var box=document.getElementById('prs');
-  prs.forEach(function(p){var el=document.createElement('article');el.className='pr reveal in'+(p[2]==='review'?' review':'');el.dataset.cat=p[1];
+  prs.forEach(function(p){var el=document.createElement('article');el.className='pr reveal in'+(p[2]!=='merged'?' review':'');el.dataset.cat=p[1];
     var top=document.createElement('div');top.className='top';
     var a=document.createElement('a');a.href='https://github.com/apache/polaris/pull/'+p[0];a.target='_blank';a.rel='noopener';a.textContent='#'+p[0]+' '+p[6];
     var t1=document.createElement('span');t1.className='tag';t1.textContent=label[p[1]];
-    var t2=document.createElement('span');t2.className='tag';t2.textContent=p[2]==='review'?'In review':'Merged';
+    var t2=document.createElement('span');t2.className='tag';t2.textContent={review:'In review',draft:'Draft',merged:'Merged'}[p[2]];
     var d=document.createElement('span');d.className='date';d.textContent=p[3];
     [a,t1,t2,d].forEach(function(n){top.appendChild(n);});
     var bar=document.createElement('div');bar.className='bar';bar.setAttribute('aria-hidden','true');
