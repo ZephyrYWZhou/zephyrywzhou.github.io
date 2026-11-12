@@ -152,21 +152,40 @@ h2{font-size:clamp(2rem,4vw,3.2rem);font-weight:620;letter-spacing:-.04em;line-h
 .step b{display:block;font-size:.92rem}
 .step span{color:var(--muted);font-size:.8rem}
 
-/* timeline */
+/* timeline: grouped by workstream, folded by default */
 .filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px}
-.tl{position:relative;padding-left:26px}
-.tl::before{content:"";position:absolute;left:8px;top:4px;bottom:4px;width:2px;background:var(--line)}
-.pr{position:relative;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:12px;transition:opacity .3s,transform .3s}
-.pr::before{content:"";position:absolute;left:-24px;top:20px;width:12px;height:12px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px var(--bg)}
-.pr.review::before{background:var(--warn)}
-.pr.hidden{display:none}
-.pr .top{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
-.pr .top a{font-weight:600;text-decoration:none;color:var(--text)}
-.pr .top a:hover{color:var(--accent)}
-.pr .date{color:var(--muted);font-size:.85rem;margin-left:auto}
-.bar{display:flex;height:6px;border-radius:4px;overflow:hidden;margin-top:10px;background:var(--bg2)}
-.bar i{display:block}.bar .a{background:var(--good)}.bar .d{background:var(--bad)}
-.pr .nums{font-size:.8rem;color:var(--muted);margin-top:6px;font-family:ui-monospace,Menlo,monospace}
+.latest{display:flex;gap:8px;flex-wrap:wrap;align-items:baseline;margin:0 0 18px;color:var(--muted);font-size:.9rem}
+.latest b{color:var(--text);font-weight:700;margin-right:2px}
+.latest a{color:var(--text);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:3px 10px;background:var(--card)}
+.latest a:hover,.latest a:focus-visible{color:var(--accent);border-color:var(--accent)}
+.grp{background:var(--card);border:1px solid var(--line);border-radius:12px;margin-bottom:12px}
+.grp.hidden{display:none}
+.grp>summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:auto 1fr auto auto;gap:14px;align-items:center;padding:14px 16px;border-radius:12px}
+.grp>summary::-webkit-details-marker{display:none}
+.grp>summary::before{content:"\25B8";color:var(--accent);transition:transform .2s}
+.grp[open]>summary::before{transform:rotate(90deg)}
+.grp>summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.grp .gname{font-weight:700;color:var(--text)}
+.grp .gmeta{color:var(--muted);font-size:.88rem}
+.grp .gnums,.prow .nums{font-family:ui-monospace,Menlo,monospace;font-size:.82rem;color:var(--muted);white-space:nowrap}
+.grp .gnums .a,.prow .nums .a{color:var(--good)}.grp .gnums .d,.prow .nums .d{color:var(--bad)}
+.grp .gdates{color:var(--muted);font-size:.82rem;white-space:nowrap}
+.grp ul{list-style:none;margin:0;padding:0 16px 10px;border-top:1px solid var(--line)}
+.prow{display:grid;grid-template-columns:auto 1fr auto auto;gap:12px;align-items:baseline;padding:9px 0;border-bottom:1px solid var(--line)}
+.prow:last-child{border-bottom:0}
+.prow a{color:var(--text);text-decoration:none;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.prow a:hover,.prow a:focus-visible{color:var(--accent)}
+.prow .num{font-family:ui-monospace,Menlo,monospace;font-size:.82rem;color:var(--accent)}
+.prow .date{color:var(--muted);font-size:.82rem;white-space:nowrap}
+.prow .pstat{white-space:nowrap}
+.prow .tag.live{color:var(--warn);border-color:var(--warn)}
+@media (max-width:720px){
+  .grp>summary{grid-template-columns:auto 1fr;row-gap:4px}
+  .grp .gnums,.grp .gdates{grid-column:2}
+  .prow{grid-template-columns:auto 1fr;row-gap:2px}
+  .prow .pstat,.prow .date{grid-column:2}
+  .prow a{white-space:normal}
+}
 
 [aria-selected="true"] .fa-solid,[aria-pressed="true"] .fa-solid{color:inherit}
 /* personal framing */
@@ -398,7 +417,8 @@ footer .wrap{display:flex;gap:16px;flex-wrap:wrap;justify-content:space-between}
 <section id="timeline">
   <div class="wrap">
     <h2 class="reveal"><i class="fa-solid fa-code-pull-request" aria-hidden="true"></i>Every pull request</h2>
-    <p class="sub reveal">Merged and in progress, newest first. Bars show lines added and removed.</p>
+    <p class="sub reveal">Grouped by workstream. Open a group to see each PR, newest first.</p>
+    <div class="latest reveal" id="latest"><b>Latest</b></div>
     <div class="filters reveal" role="group" aria-label="Filter pull requests">
       <button class="chip" aria-pressed="true" data-f="all">All</button>
       <button class="chip" aria-pressed="false" data-f="storage">Storage</button>
@@ -406,7 +426,7 @@ footer .wrap{display:flex;gap:16px;flex-wrap:wrap;justify-content:space-between}
       <button class="chip" aria-pressed="false" data-f="logs">Observability</button>
       <button class="chip" aria-pressed="false" data-f="docs">Docs</button>
     </div>
-    <div class="tl" id="prs"></div>
+    <div id="prs"></div>
   </div>
 </section>
 
@@ -540,24 +560,53 @@ footer .wrap{display:flex;gap:16px;flex-wrap:wrap;justify-content:space-between}
     [5224,'logs','merged','2026-08-04',1,2,'Use VIEW_IDENTIFIER log key on view identifier mismatch (follow-up to #5093)'],
     [5093,'logs','merged','2026-07-30',226,101,'Introduce StructuredLogKeys constants for SLF4J addKeyValue calls']
   ];
-  var label={storage:'Storage',auth:'Authorization',logs:'Observability',docs:'Docs'};
-  var max=Math.max.apply(null,prs.map(function(p){return p[4]+p[5];}));
+  var group={storage:'DynamoDB backend',auth:'Authorization',logs:'Observability',docs:'Docs'};
+  var status={review:'In review',draft:'Draft',merged:'Merged'};
+  var months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  function day(s){var p=s.split('-');return months[+p[1]-1]+' '+(+p[2]);}
+  function fmt(n){return n.toLocaleString('en-US');}
+  function el(tag,cls,text){var n=document.createElement(tag);if(cls)n.className=cls;if(text!=null)n.textContent=text;return n;}
+  function nums(add,del){var s=el('span','nums');s.appendChild(el('span','a','+'+fmt(add)));
+    s.appendChild(document.createTextNode(' / '));s.appendChild(el('span','d','\u2212'+fmt(del)));return s;}
+  function link(p,text){var a=el('a',null,text);a.href='https://github.com/apache/polaris/pull/'+p[0];a.target='_blank';a.rel='noopener';return a;}
+  prs.sort(function(x,y){return x[3]<y[3]?1:x[3]>y[3]?-1:y[0]-x[0];});
+
+  /* Latest: the 3 newest PRs, whatever the group */
+  var latest=document.getElementById('latest');
+  prs.slice(0,3).forEach(function(p){
+    var a=link(p,'#'+p[0]+' \u00b7 '+(p[2]==='merged'?'merged '+day(p[3]):status[p[2]].toLowerCase()));
+    a.setAttribute('aria-label','Pull request '+p[0]+', '+status[p[2]]+', '+p[6]);a.title=p[6];latest.appendChild(a);});
+
+  /* One folded group per workstream; totals come from the prs list */
   var box=document.getElementById('prs');
-  prs.forEach(function(p){var el=document.createElement('article');el.className='pr reveal in'+(p[2]!=='merged'?' review':'');el.dataset.cat=p[1];
-    var top=document.createElement('div');top.className='top';
-    var a=document.createElement('a');a.href='https://github.com/apache/polaris/pull/'+p[0];a.target='_blank';a.rel='noopener';a.textContent='#'+p[0]+' '+p[6];
-    var t1=document.createElement('span');t1.className='tag';t1.textContent=label[p[1]];
-    var t2=document.createElement('span');t2.className='tag';t2.textContent={review:'In review',draft:'Draft',merged:'Merged'}[p[2]];
-    var d=document.createElement('span');d.className='date';d.textContent=p[3];
-    [a,t1,t2,d].forEach(function(n){top.appendChild(n);});
-    var bar=document.createElement('div');bar.className='bar';bar.setAttribute('aria-hidden','true');
-    var ia=document.createElement('i');ia.className='a';ia.style.width=(p[4]/max*100)+'%';
-    var id=document.createElement('i');id.className='d';id.style.width=(p[5]/max*100)+'%';bar.appendChild(ia);bar.appendChild(id);
-    var nums=document.createElement('div');nums.className='nums';nums.textContent='+'+p[4]+'  \u2212'+p[5];
-    el.appendChild(top);el.appendChild(bar);el.appendChild(nums);box.appendChild(el);});
+  Object.keys(group).forEach(function(cat){
+    var list=prs.filter(function(p){return p[1]===cat;});if(!list.length)return;
+    var merged=list.filter(function(p){return p[2]==='merged';});
+    var open=list.length-merged.length;
+    var add=merged.reduce(function(s,p){return s+p[4];},0),del=merged.reduce(function(s,p){return s+p[5];},0);
+    var first=list[list.length-1][3],last=list[0][3];
+    var d=el('details','grp');d.dataset.cat=cat;
+    var sum=el('summary');
+    var name=el('span','gname',group[cat]);
+    var meta=el('span','gmeta',list.length+(list.length===1?' PR':' PRs')+' \u00b7 '+merged.length+' merged'+(open?' \u00b7 '+open+' in progress':''));
+    var dates=el('span','gdates',open?day(first)+' \u2013 now':(first===last?day(first):day(first)+' \u2013 '+day(last)));
+    var gn=nums(add,del);gn.className='gnums';gn.title='Lines in merged PRs';
+    var nameWrap=el('span');nameWrap.appendChild(name);nameWrap.appendChild(document.createTextNode(' '));nameWrap.appendChild(meta);
+    [nameWrap,gn,dates].forEach(function(n){sum.appendChild(n);});
+    d.appendChild(sum);
+    var ul=el('ul');
+    list.forEach(function(p){var li=el('li','prow');
+      li.appendChild(el('span','num','#'+p[0]));
+      var a=link(p,p[6]);a.title=p[6];li.appendChild(a);
+      var right=el('span','pstat');var tag=el('span','tag'+(p[2]==='merged'?'':' live'),status[p[2]]);right.appendChild(tag);
+      right.appendChild(document.createTextNode(' '));right.appendChild(nums(p[4],p[5]));li.appendChild(right);
+      li.appendChild(el('span','date',day(p[3])));ul.appendChild(li);});
+    d.appendChild(ul);box.appendChild(d);});
+
   document.querySelectorAll('.filters .chip').forEach(function(b){b.addEventListener('click',function(){
     document.querySelectorAll('.filters .chip').forEach(function(o){o.setAttribute('aria-pressed','false');});b.setAttribute('aria-pressed','true');
-    var f=b.dataset.f;box.querySelectorAll('.pr').forEach(function(el){el.classList.toggle('hidden',f!=='all'&&el.dataset.cat!==f);});});});
+    var f=b.dataset.f;box.querySelectorAll('.grp').forEach(function(g){var hit=f==='all'||g.dataset.cat===f;
+      g.classList.toggle('hidden',!hit);g.open=f!=='all'&&hit;});});});
 })();
 </script>
 </body>
