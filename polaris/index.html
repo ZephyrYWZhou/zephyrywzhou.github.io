@@ -307,7 +307,7 @@ footer .wrap{display:flex;gap:16px;flex-wrap:wrap;justify-content:space-between}
     <h2 class="reveal"><i class="fa-solid fa-chart-simple" aria-hidden="true"></i>My impact</h2>
     <p class="sub reveal">What I've landed in Polaris so far.</p>
     <div class="stats">
-      <div class="stat mine reveal"><div class="n" data-count="3600" data-prefix="~">0</div><div class="l">Lines of code merged</div></div>
+      <div class="stat mine reveal"><div class="n" data-count="3700" data-prefix="~">0</div><div class="l">Lines of code merged</div></div>
       <div class="stat mine reveal"><div class="n" data-count="3">0</div><div class="l">Core areas: storage, authorization, logging</div></div>
       <div class="stat mine reveal"><div class="n" data-count="3">0</div><div class="l">Authorizers unified: built-in, Ranger, OPA</div></div>
       <div class="stat mine reveal"><div class="n" data-count="55" data-prefix="~">0</div><div class="l">Shared log keys, replacing ~100 strings</div></div>
@@ -351,8 +351,8 @@ footer .wrap{display:flex;gap:16px;flex-wrap:wrap;justify-content:space-between}
       <div class="step done"><div class="dot"></div><b>Data model</b><span>#5707 &middot; merged</span></div>
       <div class="step done"><div class="dot"></div><b>Schema + test harness</b><span>#5830 &middot; merged</span></div>
       <div class="step done"><div class="dot"></div><b>Writes, CAS, uniqueness</b><span>#5892 &middot; merged</span></div>
-      <div class="step review"><div class="dot"></div><b>Children index by id</b><span>#6006 &middot; draft</span></div>
-      <div class="step"><div class="dot"></div><b>Reads &amp; listing</b><span>next</span></div>
+      <div class="step done"><div class="dot"></div><b>Children index by id</b><span>#6006 &middot; merged</span></div>
+      <div class="step review"><div class="dot"></div><b>Reads &amp; listing</b><span>#6016 &middot; draft</span></div>
       <div class="step"><div class="dot"></div><b>Grants &amp; full suite</b><span>next</span></div>
     </div>
   </div>
@@ -526,7 +526,8 @@ footer .wrap{display:flex;gap:16px;flex-wrap:wrap;justify-content:space-between}
 
   /* PR timeline */
   var prs=[
-    [6006,'storage','draft','2026-11-06',55,28,'Persistence: DynamoDB (atomic) sort the children index by entity id'],
+    [6016,'storage','draft','2026-11-09',351,35,'Persistence: DynamoDB (atomic) listing and hasChildren'],
+    [6006,'storage','merged','2026-11-11',57,28,'Persistence: DynamoDB (atomic) sort the children index by entity id'],
     [5892,'storage','merged','2026-11-07',1244,13,'Persistence: DynamoDB (atomic) entity writes, CAS and name uniqueness'],
     [5986,'storage','merged','2026-11-05',146,23,'Core: Report a rename that loses the race for its name as ENTITY_ALREADY_EXISTS'],
     [5830,'storage','merged','2026-10-27',401,0,'Persistence: DynamoDB (atomic) table schema and test harness'],
